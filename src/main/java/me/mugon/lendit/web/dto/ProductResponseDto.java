@@ -24,6 +24,5 @@ public class ProductResponseDto {
         this.price = product.getPrice();
         this.amount = product.getAmount();
         this.createdAt = product.getCreatedAt();
-
     }
 }

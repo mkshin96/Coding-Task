@@ -1,19 +1,14 @@
 package me.mugon.lendit.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import me.mugon.lendit.common.BaseControllerTest;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
 import me.mugon.lendit.web.dto.ProductRequestDto;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,16 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-class ProductControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class ProductControllerTest extends BaseControllerTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -257,7 +243,7 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 삭제 시 삭제하려는 상품이 데이터베이스에 저장되어있지 않은 경우")
+    @DisplayName("상품 삭제 시 삭제하려는 상품이 데이터베이스에 저장되어있지 않은 경우 Bad Request 반환")
     void 상품_삭제_저장안돼있을경우_테스트() throws Exception {
         long price = 15000L;
         long amount = 30L;

@@ -1,8 +1,8 @@
 package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
-import me.mugon.lendit.api.ProductService;
-import me.mugon.lendit.web.dto.ProductRequestDto;
+import me.mugon.lendit.api.AccountService;
+import me.mugon.lendit.web.dto.account.AccountRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -17,36 +17,36 @@ import java.util.Map;
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/products")
+@RequestMapping("/api/accounts")
 @RestController
-public class ProductController {
+public class AccountController {
 
-    private final ProductService productService;
-
-    @GetMapping
-    public ResponseEntity<?> getProductList() {
-        return productService.getProductList();
-    }
+    private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<?> registrationProduct(@Valid @RequestBody ProductRequestDto productRequestDto, Errors errors) {
+    public ResponseEntity<?> saveAccount(@Valid @RequestBody AccountRequestDto requestDto, Errors errors) {
         if (errors.hasErrors()) {
             return returnError(errors);
         }
-        return productService.registrationProduct(productRequestDto);
+        return accountService.saveAccount(requestDto);
     }
 
-    @PutMapping("/{productId}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long productId, @Valid @RequestBody ProductRequestDto productRequestDto, Errors errors) {
+    @PutMapping("/{accountId}")
+    public ResponseEntity<?> updateAccount(@PathVariable Long accountId, @Valid @RequestBody AccountRequestDto requestDto, Errors errors) {
         if (errors.hasErrors()) {
             return returnError(errors);
         }
-        return productService.updateProduct(productId, productRequestDto);
+        return accountService.updateAccount(accountId, requestDto);
     }
 
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
-        return productService.deleteProduct(productId);
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long accountId) {
+        return accountService.deleteAccount(accountId);
+    }
+
+    @GetMapping("/{accountId}")
+    public ResponseEntity<?> getAccount(@PathVariable Long accountId) {
+        return accountService.getAccount(accountId);
     }
 
     private ResponseEntity<?> returnError(Errors errors) {

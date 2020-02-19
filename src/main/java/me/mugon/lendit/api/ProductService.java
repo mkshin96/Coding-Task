@@ -1,7 +1,6 @@
 package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
-import me.mugon.lendit.api.error.ErrorMessage;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
 import me.mugon.lendit.web.dto.ProductRequestDto;

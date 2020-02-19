@@ -21,6 +21,6 @@ public class Order {
     @OneToMany
     private List<Product> productList;
 
-    @ManyToOne
-    private Account account;
+//    @ManyToOne
+//    private Account account;
 }

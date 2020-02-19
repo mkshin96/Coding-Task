@@ -50,17 +50,18 @@ public class ProductService {
         return ResponseEntity.ok().build();
     }
 
-    private Map<String, List<String>> getErrorMap(String message) {
-        Map<String, List<String>> errors = new HashMap<>();
-        errors.put(KEY, Arrays.asList(message));
-        return errors;
-    }
-
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getProductList() {
         List<Product> allProduct = productRepository.findAll();
         List<ProductResponseDto> collect = allProduct.stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(collect, HttpStatus.OK);
+    }
+
+    private Map<String, List<String>> getErrorMap(String message) {
+        Map<String, List<String>> errors = new HashMap<>();
+        errors.put(KEY, Arrays.asList(message));
+        return errors;
     }
 }

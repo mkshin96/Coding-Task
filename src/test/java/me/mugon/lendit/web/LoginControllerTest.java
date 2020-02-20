@@ -30,6 +30,8 @@ class LoginControllerTest extends BaseControllerTest {
     private AccountRepository accountRepository;
 
     private final String loginUrl = "/api/login";
+    private final String username = "username";
+    private final String password = "password";
 
     @AfterEach
     void clean() {
@@ -39,9 +41,6 @@ class LoginControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("정상적으로 로그인 성공")
     void 로그인() throws Exception {
-        String username = "username";
-        String password = "password";
-
         Account account = Account.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
@@ -71,10 +70,9 @@ class LoginControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("데이터베이스에 존재하지 않는 아이디일 경우")
     void 로그인_실패_because_아이디() throws Exception {
-
         LoginDto loginDto = LoginDto.builder()
                 .username("unRegisteredUser")
-                .password("password")
+                .password(password)
                 .build();
 
         mockMvc.perform(post(loginUrl)
@@ -87,9 +85,6 @@ class LoginControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("아이디는 맞지만 비밀번호가 틀린 경우")
     void 로그인_실패_because_비밀번호() throws Exception {
-        String username = "username";
-        String password = "password";
-
         Account account = Account.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))

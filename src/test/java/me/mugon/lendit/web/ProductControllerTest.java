@@ -40,8 +40,6 @@ class ProductControllerTest extends BaseControllerTest {
 
     private final String productUrl = "/api/products";
 
-    private final String BEARER = "Bearer ";
-
     @AfterEach
     void clean() {
         productRepository.deleteAll();
@@ -62,7 +60,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(post(productUrl)
-                    .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                    .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(productRequestDto)))
                 .andDo(print())
@@ -95,7 +93,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(post(productUrl)
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDto)))
                 .andDo(print())
@@ -127,7 +125,7 @@ class ProductControllerTest extends BaseControllerTest {
             }
 
             mockMvc.perform(post(productUrl)
-                    .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                    .header(HttpHeaders.AUTHORIZATION,generateJwt(account))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(productRequestDto)))
                     .andDo(print())
@@ -155,7 +153,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", savedProduct.getId())
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION,generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -188,7 +186,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", savedProduct.getId())
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION,generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -221,7 +219,7 @@ class ProductControllerTest extends BaseControllerTest {
         }
 
         mockMvc.perform(put(productUrl + "/{productUrl}", product.getId())
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION,generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -244,7 +242,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", -1)
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -268,7 +266,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", product.getId())
-                            .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(anotherAccount))
+                            .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherAccount))
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -284,7 +282,7 @@ class ProductControllerTest extends BaseControllerTest {
         Product savedProduct = saveProduct(price, amount, account);
 
         mockMvc.perform(delete(productUrl + "/{productId}", savedProduct.getId())
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -301,7 +299,7 @@ class ProductControllerTest extends BaseControllerTest {
         saveProduct(price, amount, account);
 
         mockMvc.perform(delete(productUrl + "/{productId}", -1)
-                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
+                .header(HttpHeaders.AUTHORIZATION,generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -318,7 +316,7 @@ class ProductControllerTest extends BaseControllerTest {
         Product product = saveProduct(price, amount, account);
 
         mockMvc.perform(delete(productUrl + "/{productId}", product.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(anotherAccount)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherAccount)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -348,10 +346,6 @@ class ProductControllerTest extends BaseControllerTest {
                 .createdAt(LocalDateTime.now())
                 .account(account)
                 .build());
-    }
-
-    private String generateJwt(Account account) {
-        return jwtProvider.generateToken(account);
     }
 
     private Account createAccount() {

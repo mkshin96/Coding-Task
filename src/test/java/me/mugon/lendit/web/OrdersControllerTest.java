@@ -1,10 +1,10 @@
 package me.mugon.lendit.web;
 
 import me.mugon.lendit.common.BaseControllerTest;
-import me.mugon.lendit.config.jwt.JwtProvider;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountRepository;
 import me.mugon.lendit.domain.account.Role;
+import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
@@ -41,11 +41,7 @@ class OrdersControllerTest extends BaseControllerTest {
     @Autowired
     private OrdersRepository ordersRepository;
 
-    @Autowired
-    private JwtProvider jwtProvider;
-
     private final String ordersUrl = "/api/orders";
-    private final String BEARER = "Bearer ";
     private final String username = "사용자";
     private final String password = "password";
     private final String anotherUsername = "다른 사용자";
@@ -59,7 +55,7 @@ class OrdersControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("주문이 정상적으로 등록되는지 테스트")
-    void 주문_리스트_등록_테스트() throws Exception {
+    void 주문__등록_테스트() throws Exception {
         Account account = generateAccount(username, password, 1000L);
         Account anotherAccount = generateAccount(anotherUsername, password, 500000000000L);
 
@@ -82,7 +78,7 @@ class OrdersControllerTest extends BaseControllerTest {
         assertEquals(list.size(), 10);
 
         mockMvc.perform(post(ordersUrl)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(saveAnotherAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(saveAnotherAccount))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(list)))
                 .andDo(print())
@@ -91,6 +87,9 @@ class OrdersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("[*].total").exists())
                 .andExpect(jsonPath("[*].number").exists())
                 .andExpect(jsonPath("[*].createdAt").exists());
+
+        List<Orders> all = ordersRepository.findAll();
+        assertEquals(all.size(), 10);
     }
 
     @Test
@@ -116,7 +115,7 @@ class OrdersControllerTest extends BaseControllerTest {
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(savedAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
@@ -147,7 +146,7 @@ class OrdersControllerTest extends BaseControllerTest {
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                        .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(savedAccount))
+                        .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
@@ -184,7 +183,7 @@ class OrdersControllerTest extends BaseControllerTest {
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(anotherSavedAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
@@ -220,7 +219,7 @@ class OrdersControllerTest extends BaseControllerTest {
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                    .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(anotherSavedAccount))
+                    .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
@@ -231,13 +230,14 @@ class OrdersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("[*].createdAt").exists());
 
         mockMvc.perform(post(ordersUrl)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(anotherSavedAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
     }
+
 
     private Product saveProduct(Product product) {
         return productRepository.save(product);

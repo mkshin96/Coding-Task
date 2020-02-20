@@ -8,16 +8,20 @@ import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.product.Product;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class OrdersRequestDto {
 
+    @NotNull
     private Long total;
 
+    @NotNull
     private Long number;
 
+    @NotNull
     private Product product;
 
     public Orders toEntity(Account currentUser) {

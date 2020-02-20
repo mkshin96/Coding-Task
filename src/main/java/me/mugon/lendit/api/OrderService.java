@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 
@@ -28,7 +29,7 @@ public class OrderService {
 
     @Transactional
     public ResponseEntity<?> order(OrdersRequestDto[] requestDto, Account currentUser) {
-        List<OrdersResponseDto> list = new LinkedList<>();
+        List<Orders> ordersList = new LinkedList<>();
         for (OrdersRequestDto order : requestDto) {
             if (order.getProduct().isCheckAmount()) {
                 return new ResponseEntity<>(SHORTAGEOFGOODS, HttpStatus.BAD_REQUEST);
@@ -59,10 +60,13 @@ public class OrderService {
                 product.amountIsZero();
             }
             Orders orders = order.toEntity(currentUser);
-            Orders save = ordersRepository.save(orders);
-            list.add(new OrdersResponseDto(save));
+            ordersList.add(orders);
         }
-        return new ResponseEntity<>(list ,HttpStatus.CREATED);
+        ordersRepository.saveAll(ordersList);
+        List<OrdersResponseDto> collect = ordersList.stream()
+                .map(OrdersResponseDto::new)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(collect ,HttpStatus.CREATED);
     }
 
     private boolean verifyBalance(OrdersRequestDto requestDto, Account account) {

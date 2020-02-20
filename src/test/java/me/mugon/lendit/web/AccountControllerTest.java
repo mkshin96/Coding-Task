@@ -163,7 +163,7 @@ class AccountControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(accountUrl + "/{accountId}", savedAccount.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(savedAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
@@ -192,7 +192,7 @@ class AccountControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(accountUrl + "/{accountId}", account.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
@@ -212,7 +212,7 @@ class AccountControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(accountUrl + "/{accountId}", account.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
@@ -232,7 +232,7 @@ class AccountControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(accountUrl + "/{accountId}", -1)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
@@ -246,7 +246,7 @@ class AccountControllerTest extends BaseControllerTest {
         Account account = saveAccount();
 
         mockMvc.perform(delete(accountUrl + "/{accountId}", account.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -260,7 +260,7 @@ class AccountControllerTest extends BaseControllerTest {
         Account account = saveAccount();
 
         mockMvc.perform(delete(accountUrl + "/{accountId}", -1)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -272,7 +272,7 @@ class AccountControllerTest extends BaseControllerTest {
         Account savedAccount = saveAccount();
 
         mockMvc.perform(get(accountUrl + "/{accountId}", savedAccount.getId())
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(savedAccount)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").isNotEmpty())
@@ -287,7 +287,7 @@ class AccountControllerTest extends BaseControllerTest {
         Account account = saveAccount();
 
         mockMvc.perform(get(accountUrl + "/{accountId}", -1)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(account)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -301,9 +301,5 @@ class AccountControllerTest extends BaseControllerTest {
                 .createdAt(LocalDateTime.now())
                 .role(Role.ROLE_USER)
                 .build());
-    }
-
-    private String generateJwt(Account account) {
-        return jwtProvider.generateToken(account);
     }
 }

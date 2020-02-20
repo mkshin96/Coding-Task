@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 

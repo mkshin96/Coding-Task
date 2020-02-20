@@ -2,7 +2,6 @@ package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.api.LoginService;
-import me.mugon.lendit.api.error.ErrorMessageConstant;
 import me.mugon.lendit.web.dto.LoginDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
+import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/login")

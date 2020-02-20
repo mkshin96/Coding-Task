@@ -5,7 +5,6 @@ import me.mugon.lendit.config.jwt.JwtProvider;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountRepository;
 import me.mugon.lendit.domain.account.Role;
-import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
@@ -25,9 +24,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

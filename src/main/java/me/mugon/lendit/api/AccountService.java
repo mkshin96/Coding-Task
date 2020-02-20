@@ -1,7 +1,6 @@
 package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
-import me.mugon.lendit.api.error.ErrorMessageConstant;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountAdapter;
 import me.mugon.lendit.domain.account.AccountRepository;

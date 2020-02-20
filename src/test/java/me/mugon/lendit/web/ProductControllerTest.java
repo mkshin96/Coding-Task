@@ -146,7 +146,7 @@ class ProductControllerTest extends BaseControllerTest {
         long amount = 30L;
         String updatedName = "모던 자바 인 액션";
         Account account = createAccount();
-        Product savedProduct = saveProduct(price, amount);
+        Product savedProduct = saveProduct(price, amount, account);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
                 .name(updatedName)
@@ -179,7 +179,7 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        Product savedProduct = saveProduct(price, amount);
+        Product savedProduct = saveProduct(price, amount, account);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
                 .name(emptyName)
@@ -203,7 +203,7 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        Product product = saveProduct(price, amount);
+        Product product = saveProduct(price, amount, account);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
                 .name(name)
@@ -235,7 +235,7 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        Product product = saveProduct(price, amount);
+        Product product = saveProduct(price, amount, account);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
                 .name(product.getName())
@@ -253,12 +253,35 @@ class ProductControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("상품 수정 시 상품을 등록한 사용자가 아닐 경우 Bad Request 반환")
+    void 상품_수정_등록한_사용자가_아닐_경우() throws Exception {
+        long price = 100000L;
+        long amount = 10000L;
+        Account account = createAccount();
+        Account anotherAccount = createAccount_need_account(generateAccount_need_username("anotherUsername"));
+
+        Product product = saveProduct(10000L, 1000L, account);
+        ProductRequestDto updateProduct = ProductRequestDto.builder()
+                .name(product.getName())
+                .price(price)
+                .amount(amount)
+                .build();
+
+        mockMvc.perform(put(productUrl + "/{productId}", product.getId())
+                            .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(anotherAccount))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateProduct)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(KEY).exists());
+    }
+    @Test
     @DisplayName("정상적으로 상품이 삭제되는지 테스트")
     void 상품_삭제_테스트() throws Exception{
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        Product savedProduct = saveProduct(price, amount);
+        Product savedProduct = saveProduct(price, amount, account);
 
         mockMvc.perform(delete(productUrl + "/{productId}", savedProduct.getId())
                 .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
@@ -275,10 +298,27 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        saveProduct(price, amount);
+        saveProduct(price, amount, account);
 
         mockMvc.perform(delete(productUrl + "/{productId}", -1)
                 .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(KEY).exists());
+    }
+
+    @Test
+    @DisplayName("상품 삭제 시 요청을 한 사용자가 상품을 등록한 사용자가 아닌 경우 Bad Request 반환")
+    void 상품_삭제_사용자가_상품을_등록한_사용자가_아닌경우() throws Exception {
+        long price = 100000L;
+        long amount = 10000L;
+        Account account = createAccount();
+        Account anotherAccount = createAccount_need_account(generateAccount_need_username("anotherUsername"));
+
+        Product product = saveProduct(price, amount, account);
+
+        mockMvc.perform(delete(productUrl + "/{productId}", product.getId())
+                .header(HttpHeaders.AUTHORIZATION, BEARER + generateJwt(anotherAccount)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -289,7 +329,8 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품_리스트_조회_테스트() throws Exception {
         long price = 15000L;
         long amount = 30L;
-        IntStream.rangeClosed(1, 30).forEach(e -> saveProduct(price, amount));
+        Account account = createAccount();
+        IntStream.rangeClosed(1, 30).forEach(e -> saveProduct(price, amount, account));
 
         List<Product> all = productRepository.findAll();
         assertEquals(all.size(), 30);
@@ -299,12 +340,13 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Product saveProduct(long price, long amount) {
+    private Product saveProduct(long price, long amount, Account account) {
         return productRepository.save(Product.builder()
                 .name("스타트 스프링 부트")
                 .price(price)
                 .amount(amount)
                 .createdAt(LocalDateTime.now())
+                .account(account)
                 .build());
     }
 
@@ -316,9 +358,22 @@ class ProductControllerTest extends BaseControllerTest {
         return accountRepository.save(generateAccount());
     }
 
+    private Account createAccount_need_account(Account account) {
+        return accountRepository.save(account);
+    }
+
     private Account generateAccount() {
         return Account.builder()
                 .username("username")
+                .password("password")
+                .createdAt(LocalDateTime.now())
+                .role(Role.ROLE_USER)
+                .build();
+    }
+
+    private Account generateAccount_need_username(String username) {
+        return Account.builder()
+                .username(username)
                 .password("password")
                 .createdAt(LocalDateTime.now())
                 .role(Role.ROLE_USER)

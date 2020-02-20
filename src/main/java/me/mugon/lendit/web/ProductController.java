@@ -43,12 +43,12 @@ public class ProductController {
         if (errors.hasErrors()) {
             return returnError(errors);
         }
-        return productService.updateProduct(productId, productRequestDto);
+        return productService.updateProduct(productId, productRequestDto, currentUser);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
-        return productService.deleteProduct(productId);
+    public ResponseEntity<?> deleteProduct(@PathVariable Long productId, @CurrentUser Account currentUser) {
+        return productService.deleteProduct(productId, currentUser);
     }
 
     private ResponseEntity<?> returnError(Errors errors) {

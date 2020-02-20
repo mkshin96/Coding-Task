@@ -16,9 +16,9 @@ public class OrdersRequestDto {
 
     private Long total;
 
-    private LocalDateTime createdAt;
-
     private Long number;
+
+    private Product product;
 
     public Orders toEntity(Account currentUser, Product product) {
         return Orders.builder()
@@ -30,13 +30,17 @@ public class OrdersRequestDto {
                 .build();
     }
 
-    public boolean verifyBalance(Account currentUser) {
-        System.out.println("================================");
-        System.out.println(currentUser);
-        System.out.println(currentUser.getBalance());
-        System.out.println(total);
-        System.out.println("================================");
+    public Orders toEntity2(Account currentUser) {
+        return Orders.builder()
+                .total(total)
+                .number(number)
+                .account(currentUser)
+                .product(product)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 
+    public boolean verifyBalance(Account currentUser) {
         return currentUser.getBalance() < total;
     }
 

@@ -2,12 +2,9 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
-import me.mugon.lendit.domain.account.AccountRepository;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.product.Product;
-import me.mugon.lendit.domain.product.ProductRepository;
-import me.mugon.lendit.web.dto.account.AccountRequestDto;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
 import me.mugon.lendit.web.dto.order.OrdersResponseDto;
 import org.springframework.http.HttpStatus;
@@ -15,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -25,26 +25,52 @@ public class OrderService {
 
     private final ProductService productService;
 
+    private final AccountService accountService;
+
     @Transactional
-    public ResponseEntity<?> order(OrdersRequestDto requestDto, Account currentUser, Long productId) {
-        if (requestDto.verifyBalance(currentUser)) { //상품 총액이 예치금보다 많을 경우
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> order(OrdersRequestDto[] requestDto, Account currentUser) {
+        List<OrdersResponseDto> list = new LinkedList<>();
+        for (OrdersRequestDto order : requestDto) {
+            Long id = order.getProduct().getId();
+            Optional<Product> optionalProduct = productService.findById(id);
+            if (!optionalProduct.isPresent()) {
+                return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
+            }
+            Product product = optionalProduct.get();
+            if (verifyAmount(order, order.getProduct())) {
+                return new ResponseEntity<>(getErrorMap(SHORTAGEOFGOODS), HttpStatus.BAD_REQUEST);
+            }
+            Optional<Account> optionalAccount = accountService.findById(currentUser.getId());
+            if (!optionalAccount.isPresent()) {
+                return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
+            }
+            Account account = optionalAccount.get();
+            if (account.getBalance() < order.getTotal()) {
+                return new ResponseEntity<>(getErrorMap(OVERTHELIMIT), HttpStatus.BAD_REQUEST);
+            }
+            if (currentUser.getId().equals(order.getProduct().getAccount().getId())) {
+                return new ResponseEntity<>(getErrorMap(REGISTEREDBYONESELF), HttpStatus.BAD_REQUEST);
+            }
+            account.reduceBalance(order.getTotal());
+            product.reduceAmount(order.getNumber());
+            Orders orders = order.toEntity2(currentUser);
+            Orders save = ordersRepository.save(orders);
+            list.add(new OrdersResponseDto(save));
         }
-        Optional<Product> currentProduct = productService.findById(productId);
-        if (!currentProduct.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Product product = currentProduct.get();
-        if (requestDto.verifyAmount(product)) { //주문하려는 상품 개수가 재고보다 많을 경우
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(list ,HttpStatus.CREATED);
+    }
+    
+    private boolean verifyBalance(OrdersRequestDto requestDto, Account account) {
+        return requestDto.verifyBalance(account);
+    }
 
-        Orders orders = requestDto.toEntity(currentUser, product);
-        Orders savedOrders = ordersRepository.save(orders);
-        
-        product.reduceAmount(requestDto.getNumber());
-        currentUser.reduceBalance(requestDto.getTotal());
+    private boolean verifyAmount(OrdersRequestDto requestDto, Product product) {
+        return requestDto.verifyAmount(product);
+    }
 
-        return new ResponseEntity<>(new OrdersResponseDto(savedOrders), HttpStatus.CREATED);
+    private Map<String, List<String>> getErrorMap(String message) {
+        Map<String, List<String>> errors = new HashMap<>();
+        errors.put(KEY, Arrays.asList(message));
+        return errors;
     }
 }

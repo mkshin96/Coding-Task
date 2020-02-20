@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
-import org.springframework.util.IdGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter @NoArgsConstructor @AllArgsConstructor @Builder
-@Entity @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Entity @JsonIdentityInfo(scope = Product.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Product {
 
     @Id
@@ -24,10 +23,10 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
-    private String name; //이름
+    private String name;
 
     @Column(nullable = false)
-    private Long price; //가격
+    private Long price;
 
     @Column(nullable = false)
     private Long amount; //수량

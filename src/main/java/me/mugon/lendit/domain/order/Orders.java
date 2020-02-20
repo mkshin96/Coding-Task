@@ -31,12 +31,4 @@ public class Orders {
 
     @ManyToOne
     private Account account;
-
-    public void map() {
-//        if (this.account.getOrdersSet() == null) {
-//
-//        }
-//        this.account.getOrderList().add(this);
-//        this.product.getOrdersList().add(this);
-    }
 }

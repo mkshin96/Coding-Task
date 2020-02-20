@@ -2,7 +2,6 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
-import me.mugon.lendit.domain.account.CurrentUser;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
@@ -15,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
-import static me.mugon.lendit.api.error.ErrorMessageConstant.PRODUCTNOTFOUND;
+import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -33,23 +31,30 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto) {
+    public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
-        if (!optionalProduct.isPresent()) {
+        if (!optionalProduct.isPresent()) { //수정하려는 상품이 데이터베이스에 있는 상품인지
             return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Product product = optionalProduct.get();
+        if (!product.getAccount().getId().equals(currentUser.getId())) { //요청한 사용자가 상품을 등록한 사용자인지
+            return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
+        }
         product.update(productRequestDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> deleteProduct(Long productId) {
+    public ResponseEntity<?> deleteProduct(Long productId, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
         if (!optionalProduct.isPresent()) {
             return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
-        productRepository.delete(optionalProduct.get());
+        Product product = optionalProduct.get();
+        if (!product.getAccount().getId().equals(currentUser.getId())) {
+            return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
+        }
+        productRepository.delete(product);
         return ResponseEntity.ok().build();
     }
 

@@ -67,7 +67,7 @@ public class ProductService {
         return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 
-    public Optional<Product> findById(Long productId) {
+    Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
     }
 

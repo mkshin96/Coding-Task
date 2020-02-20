@@ -20,17 +20,7 @@ public class OrdersRequestDto {
 
     private Product product;
 
-    public Orders toEntity(Account currentUser, Product product) {
-        return Orders.builder()
-                .total(total)
-                .number(number)
-                .account(currentUser)
-                .product(product)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-
-    public Orders toEntity2(Account currentUser) {
+    public Orders toEntity(Account currentUser) {
         return Orders.builder()
                 .total(total)
                 .number(number)

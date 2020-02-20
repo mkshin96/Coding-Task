@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -195,6 +196,50 @@ class OrdersControllerTest extends BaseControllerTest {
 
         Optional<Product> findById = productRepository.findById(savedProduct.getId());
         assertEquals(findById.get().getAmount(), amount);
+    }
+
+    @Test
+    @DisplayName("상품의 재고가 0이 된 경우 상품을 더 이상 주문할 수 없는지 테스트")
+    void 상품_재고_0_삭제() throws Exception {
+        long balance = 300000L;
+        long price = 10000L;
+        long number = 30L;
+        long amount = 30L;
+
+        Account account = generateAccount(username, password, balance);
+        Account anotherAccount = generateAccount(anotherUsername, password, balance);
+        Account savedAccount = saveAccount(account);
+        Account anotherSavedAccount = saveAccount(anotherAccount);
+
+        Product product = generateProduct(price, amount, savedAccount);
+        Product savedProduct = saveProduct(product);
+
+        OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
+                .number(number)
+                .total(number * price)
+                .product(savedProduct)
+                .build();
+
+        List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
+
+        mockMvc.perform(post(ordersUrl)
+                    .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(anotherSavedAccount))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("[*].id").exists())
+                .andExpect(jsonPath("[*].total").exists())
+                .andExpect(jsonPath("[*].number").exists())
+                .andExpect(jsonPath("[*].createdAt").exists());
+
+        mockMvc.perform(post(ordersUrl)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + jwtProvider.generateToken(anotherSavedAccount))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(KEY).exists());
     }
 
     private Product saveProduct(Product product) {

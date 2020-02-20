@@ -33,6 +33,8 @@ public class Product {
 
     private LocalDateTime createdAt;
 
+    private boolean checkAmount;
+
     @OneToMany(mappedBy = "product")
     private List<Orders> ordersList;
 
@@ -55,5 +57,9 @@ public class Product {
         }
         this.account = currentUser;
         this.account.getProductSet().add(this);
+    }
+
+    public void amountIsZero() {
+        this.checkAmount = true;
     }
 }

@@ -31,6 +31,9 @@ public class OrderService {
     public ResponseEntity<?> order(OrdersRequestDto[] requestDto, Account currentUser) {
         List<OrdersResponseDto> list = new LinkedList<>();
         for (OrdersRequestDto order : requestDto) {
+            if (order.getProduct().isCheckAmount()) {
+                return new ResponseEntity<>(SHORTAGEOFGOODS, HttpStatus.BAD_REQUEST);
+            }
             Long id = order.getProduct().getId();
             Optional<Product> optionalProduct = productService.findById(id);
             if (!optionalProduct.isPresent()) {
@@ -45,7 +48,7 @@ public class OrderService {
                 return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
             }
             Account account = optionalAccount.get();
-            if (account.getBalance() < order.getTotal()) {
+            if (verifyBalance(order, currentUser)) {
                 return new ResponseEntity<>(getErrorMap(OVERTHELIMIT), HttpStatus.BAD_REQUEST);
             }
             if (currentUser.getId().equals(order.getProduct().getAccount().getId())) {
@@ -53,13 +56,16 @@ public class OrderService {
             }
             account.reduceBalance(order.getTotal());
             product.reduceAmount(order.getNumber());
-            Orders orders = order.toEntity2(currentUser);
+            if (product.getAmount() == 0) {
+                product.amountIsZero();
+            }
+            Orders orders = order.toEntity(currentUser);
             Orders save = ordersRepository.save(orders);
             list.add(new OrdersResponseDto(save));
         }
         return new ResponseEntity<>(list ,HttpStatus.CREATED);
     }
-    
+
     private boolean verifyBalance(OrdersRequestDto requestDto, Account account) {
         return requestDto.verifyBalance(account);
     }

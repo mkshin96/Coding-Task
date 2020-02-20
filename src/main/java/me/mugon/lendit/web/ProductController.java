@@ -2,7 +2,9 @@ package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.api.ProductService;
-import me.mugon.lendit.web.dto.ProductRequestDto;
+import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.account.CurrentUser;
+import me.mugon.lendit.web.dto.product.ProductRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -29,15 +31,15 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registrationProduct(@Valid @RequestBody ProductRequestDto productRequestDto, Errors errors) {
+    public ResponseEntity<?> registrationProduct(@Valid @RequestBody ProductRequestDto productRequestDto, Errors errors, @CurrentUser Account currentUser) {
         if (errors.hasErrors()) {
             return returnError(errors);
         }
-        return productService.registrationProduct(productRequestDto);
+        return productService.registrationProduct(productRequestDto, currentUser);
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long productId, @Valid @RequestBody ProductRequestDto productRequestDto, Errors errors) {
+    public ResponseEntity<?> updateProduct(@PathVariable Long productId, @Valid @RequestBody ProductRequestDto productRequestDto, Errors errors, @CurrentUser Account currentUser) {
         if (errors.hasErrors()) {
             return returnError(errors);
         }

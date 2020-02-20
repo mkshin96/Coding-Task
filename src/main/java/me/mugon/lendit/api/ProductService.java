@@ -1,10 +1,12 @@
 package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
+import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.account.CurrentUser;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
-import me.mugon.lendit.web.dto.ProductRequestDto;
-import me.mugon.lendit.web.dto.ProductResponseDto;
+import me.mugon.lendit.web.dto.product.ProductRequestDto;
+import me.mugon.lendit.web.dto.product.ProductResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,14 +25,16 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public ResponseEntity<?> registrationProduct(ProductRequestDto productRequestDto) {
-        Product savedProduct = productRepository.save(productRequestDto.toEntity());
+    public ResponseEntity<?> registrationProduct(ProductRequestDto productRequestDto, Account currentUser) {
+        Product product = productRequestDto.toEntity(currentUser);
+        product.mapUser(currentUser);
+        Product savedProduct = productRepository.save(product);
         return new ResponseEntity<>(new ProductResponseDto(savedProduct), HttpStatus.CREATED);
     }
 
     @Transactional
     public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
+        Optional<Product> optionalProduct = findById(productId);
         if (!optionalProduct.isPresent()) {
             return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
@@ -41,7 +45,7 @@ public class ProductService {
 
     @Transactional
     public ResponseEntity<?> deleteProduct(Long productId) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
+        Optional<Product> optionalProduct = findById(productId);
         if (!optionalProduct.isPresent()) {
             return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
@@ -56,6 +60,10 @@ public class ProductService {
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(collect, HttpStatus.OK);
+    }
+
+    public Optional<Product> findById(Long productId) {
+        return productRepository.findById(productId);
     }
 
     private Map<String, List<String>> getErrorMap(String message) {

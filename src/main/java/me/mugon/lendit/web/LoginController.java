@@ -1,14 +1,16 @@
 package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
-import me.mugon.lendit.api.AccountService;
-import me.mugon.lendit.domain.account.Account;
-import me.mugon.lendit.domain.account.CurrentUser;
-import me.mugon.lendit.web.dto.account.AccountRequestDto;
+import me.mugon.lendit.api.LoginService;
+import me.mugon.lendit.api.error.ErrorMessageConstant;
+import me.mugon.lendit.web.dto.LoginDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -16,39 +18,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
+import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/accounts")
+@RequestMapping(value = "/api/login")
 @RestController
-public class AccountController {
+public class LoginController {
 
-    private final AccountService accountService;
+    private final LoginService loginService;
 
     @PostMapping
-    public ResponseEntity<?> saveAccount(@Valid @RequestBody AccountRequestDto requestDto, Errors errors) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto, Errors errors) {
         if (errors.hasErrors()) {
-            return returnError(errors);
+            return new ResponseEntity<>(returnError(errors), HttpStatus.BAD_REQUEST);
         }
-        return accountService.saveAccount(requestDto);
-    }
-
-    @PutMapping("/{accountId}")
-    public ResponseEntity<?> updateAccount(@PathVariable Long accountId, @Valid @RequestBody AccountRequestDto requestDto, Errors errors, @CurrentUser Account currentUser) {
-        if (errors.hasErrors()) {
-            return returnError(errors);
-        }
-        return accountService.updateAccount(accountId, requestDto);
-    }
-
-    @DeleteMapping("/{accountId}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long accountId, @CurrentUser Account currentUser) {
-        return accountService.deleteAccount(accountId);
-    }
-
-    @GetMapping("/{accountId}")
-    public ResponseEntity<?> getAccount(@PathVariable Long accountId, @CurrentUser Account currentUser) {
-        return accountService.getAccount(accountId);
+        return loginService.login(loginDto);
     }
 
     private ResponseEntity<?> returnError(Errors errors) {

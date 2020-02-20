@@ -3,8 +3,8 @@ package me.mugon.lendit.web.dto.account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import me.mugon.lendit.domain.Order;
 import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.order.Orders;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class AccountResponseDto {
 
     private Long balance;
 
-    private List<Order> orderList;
+    private List<Orders> orderList;
 
     private LocalDateTime createdAt;
 

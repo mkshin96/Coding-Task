@@ -1,13 +1,18 @@
 package me.mugon.lendit.web;
 
 import me.mugon.lendit.common.BaseControllerTest;
+import me.mugon.lendit.config.jwt.JwtProvider;
+import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.account.AccountRepository;
+import me.mugon.lendit.domain.account.Role;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
-import me.mugon.lendit.web.dto.ProductRequestDto;
+import me.mugon.lendit.web.dto.product.ProductRequestDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
@@ -27,11 +32,20 @@ class ProductControllerTest extends BaseControllerTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private JwtProvider jwtProvider;
+
     private final String productUrl = "/api/products";
+
+    private final String BEARER = "Bearer ";
 
     @AfterEach
     void clean() {
         productRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test
@@ -40,7 +54,7 @@ class ProductControllerTest extends BaseControllerTest {
         String name = "스타트 스프링 부트";
         long price = 15000L;
         long amount = 30L;
-
+        Account account = createAccount();
         ProductRequestDto productRequestDto = ProductRequestDto.builder()
                 .name(name)
                 .price(price)
@@ -48,6 +62,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(post(productUrl)
+                    .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(productRequestDto)))
                 .andDo(print())
@@ -56,7 +71,8 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("name", is(name)))
                 .andExpect(jsonPath("price", is(15000)))
                 .andExpect(jsonPath("amount", is(30)))
-                .andExpect(jsonPath("createdAt").exists());
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("account.username", is(account.getUsername())));
 
         List<Product> findAll = productRepository.findAll();
         assertEquals(findAll.get(0).getName(), name);
@@ -70,6 +86,7 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품_등록_상품이름_공백_테스트(String emptyName) throws Exception {
         long price = 15000L;
         long amount = 30L;
+        Account account = createAccount();
 
         ProductRequestDto productRequestDto = ProductRequestDto.builder()
                 .name(emptyName)
@@ -78,11 +95,12 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(post(productUrl)
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath(KEY).exists());
 
         List<Product> all = productRepository.findAll();
         assertEquals(all.size(), 0);
@@ -91,6 +109,7 @@ class ProductControllerTest extends BaseControllerTest {
     @DisplayName("상품 생성 시 이름, 가격, 수량 중 하나라도 null이 들어올 경우 BadRequest 반환")
     @RepeatedTest(value = 3, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
     void 상품_등록_null_테스트(RepetitionInfo info) throws Exception {
+        Account account = createAccount();
         if (info.getCurrentRepetition() == 1) {
             ProductRequestDto productRequestDto = ProductRequestDto.builder()
                     .name("스타트 스프링 부트")
@@ -108,6 +127,7 @@ class ProductControllerTest extends BaseControllerTest {
             }
 
             mockMvc.perform(post(productUrl)
+                    .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(productRequestDto)))
                     .andDo(print())
@@ -125,7 +145,7 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         String updatedName = "모던 자바 인 액션";
-
+        Account account = createAccount();
         Product savedProduct = saveProduct(price, amount);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
@@ -135,6 +155,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", savedProduct.getId())
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -157,7 +178,7 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품수정_상품이름_공백테스트(String emptyName) throws Exception {
         long price = 15000L;
         long amount = 30L;
-
+        Account account = createAccount();
         Product savedProduct = saveProduct(price, amount);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
@@ -167,6 +188,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", savedProduct.getId())
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -180,6 +202,7 @@ class ProductControllerTest extends BaseControllerTest {
         String name = "스타트 스프링 부트";
         long price = 15000L;
         long amount = 30L;
+        Account account = createAccount();
         Product product = saveProduct(price, amount);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
@@ -198,6 +221,7 @@ class ProductControllerTest extends BaseControllerTest {
         }
 
         mockMvc.perform(put(productUrl + "/{productUrl}", product.getId())
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -210,7 +234,7 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품_수정_저장안돼있을경우_테스트() throws Exception {
         long price = 15000L;
         long amount = 30L;
-
+        Account account = createAccount();
         Product product = saveProduct(price, amount);
 
         ProductRequestDto updateProduct = ProductRequestDto.builder()
@@ -220,6 +244,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(put(productUrl + "/{productId}", -1)
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateProduct)))
                 .andDo(print())
@@ -232,9 +257,11 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품_삭제_테스트() throws Exception{
         long price = 15000L;
         long amount = 30L;
+        Account account = createAccount();
         Product savedProduct = saveProduct(price, amount);
 
-        mockMvc.perform(delete(productUrl + "/{productId}", savedProduct.getId()))
+        mockMvc.perform(delete(productUrl + "/{productId}", savedProduct.getId())
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -247,9 +274,11 @@ class ProductControllerTest extends BaseControllerTest {
     void 상품_삭제_저장안돼있을경우_테스트() throws Exception {
         long price = 15000L;
         long amount = 30L;
+        Account account = createAccount();
         saveProduct(price, amount);
 
-        mockMvc.perform(delete(productUrl + "/{productId}", -1))
+        mockMvc.perform(delete(productUrl + "/{productId}", -1)
+                .header(HttpHeaders.AUTHORIZATION,BEARER + generateJwt(account)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -277,5 +306,22 @@ class ProductControllerTest extends BaseControllerTest {
                 .amount(amount)
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    private String generateJwt(Account account) {
+        return jwtProvider.generateToken(account);
+    }
+
+    private Account createAccount() {
+        return accountRepository.save(generateAccount());
+    }
+
+    private Account generateAccount() {
+        return Account.builder()
+                .username("username")
+                .password("password")
+                .createdAt(LocalDateTime.now())
+                .role(Role.ROLE_USER)
+                .build();
     }
 }

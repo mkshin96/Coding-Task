@@ -1,18 +1,18 @@
 package me.mugon.lendit.domain.account;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import me.mugon.lendit.domain.Order;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
+import me.mugon.lendit.domain.order.Orders;
+import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.web.dto.account.AccountRequestDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
-@Entity
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder @EqualsAndHashCode(of = "id") @ToString
+@Entity @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Account {
 
     @Id
@@ -23,15 +23,29 @@ public class Account {
     private String username;
 
     @Column
+    private String password;
+
+    @Column
     private Long balance;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private LocalDateTime createdAt;
 
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
-//    private List<Order> orderList;
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private Set<Orders> ordersSet;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private Set<Product> productSet;
 
     public void update(AccountRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.balance = requestDto.getBalance();
+    }
+
+    public void reduceBalance(Long total) {
+        this.balance -= total;
     }
 }

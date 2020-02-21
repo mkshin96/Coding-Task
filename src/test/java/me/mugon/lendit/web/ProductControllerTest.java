@@ -1,7 +1,6 @@
 package me.mugon.lendit.web;
 
 import me.mugon.lendit.common.BaseControllerTest;
-import me.mugon.lendit.config.jwt.JwtProvider;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountRepository;
 import me.mugon.lendit.domain.account.Role;
@@ -22,6 +21,13 @@ import java.util.stream.IntStream;
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,9 +39,6 @@ class ProductControllerTest extends BaseControllerTest {
 
     @Autowired
     private AccountRepository accountRepository;
-
-    @Autowired
-    private JwtProvider jwtProvider;
 
     private final String productUrl = "/api/products";
 
@@ -76,7 +79,46 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.query-products").exists())
                 .andExpect(jsonPath("_links.update-product").exists())
                 .andExpect(jsonPath("_links.delete-product").exists())
-                .andExpect(jsonPath("_links.order").exists());
+                .andExpect(jsonPath("_links.order").exists())
+                .andDo(document("create-product",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("update-product").description("link to update product"),
+                                linkWithRel("delete-product").description("link to delete product"),
+                                linkWithRel("order").description("link to order")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                        ), requestFields(
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("상품 식별자"),
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량"),
+                                fieldWithPath("createdAt").description("상품 등록 일시"),
+                                fieldWithPath("account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("account.username").description("상품 등록자 이름"),
+                                fieldWithPath("account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("account.role").description("상품 등록자 역할"),
+                                fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
+                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
+                                fieldWithPath("account.productSet[*].id").ignored(),
+                                fieldWithPath("account.productSet[*].name").ignored(),
+                                fieldWithPath("account.productSet[*].price").ignored(),
+                                fieldWithPath("account.productSet[*].amount").ignored(),
+                                fieldWithPath("account.productSet[*].createdAt").ignored(),
+                                fieldWithPath("account.productSet[*].ordersList").ignored(),
+                                fieldWithPath("account.productSet[*].account").ignored(),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Product> findAll = productRepository.findAll();
         assertEquals(findAll.get(0).getName(), name);
@@ -172,7 +214,45 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.delete-product").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
-                .andExpect(jsonPath("_links.create-product").exists());
+                .andExpect(jsonPath("_links.create-product").exists())
+                .andDo(document("update-product",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("delete-product").description("link to delete product"),
+                                linkWithRel("create-product").description("link to create product")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                        ), requestFields(
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("상품 식별자"),
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량"),
+                                fieldWithPath("createdAt").description("상품 등록 일시"),
+                                fieldWithPath("account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("account.username").description("상품 등록자 이름"),
+                                fieldWithPath("account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("account.role").description("상품 등록자 역할"),
+                                fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
+                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
+                                fieldWithPath("account.productSet[*].id").ignored(),
+                                fieldWithPath("account.productSet[*].name").ignored(),
+                                fieldWithPath("account.productSet[*].price").ignored(),
+                                fieldWithPath("account.productSet[*].amount").ignored(),
+                                fieldWithPath("account.productSet[*].createdAt").ignored(),
+                                fieldWithPath("account.productSet[*].ordersList").ignored(),
+                                fieldWithPath("account.productSet[*].account").ignored(),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Product> findAll = productRepository.findAll();
         assertEquals(findAll.get(0).getName(), updatedName);
@@ -297,7 +377,37 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.create-product").exists())
-                .andExpect(jsonPath("_links.query-products").exists());
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andDo(document("update-product",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("create-product").description("link to create product")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("상품 식별자"),
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량"),
+                                fieldWithPath("createdAt").description("상품 등록 일시"),
+                                fieldWithPath("account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("account.username").description("상품 등록자 이름"),
+                                fieldWithPath("account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("account.role").description("상품 등록자 역할"),
+                                fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
+                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
+                                fieldWithPath("account.productSet[*].id").ignored(),
+                                fieldWithPath("account.productSet[*].name").ignored(),
+                                fieldWithPath("account.productSet[*].price").ignored(),
+                                fieldWithPath("account.productSet[*].amount").ignored(),
+                                fieldWithPath("account.productSet[*].createdAt").ignored(),
+                                fieldWithPath("account.productSet[*].ordersList").ignored(),
+                                fieldWithPath("account.productSet[*].account").ignored(),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Product> all = productRepository.findAll();
         assertEquals(all.size(), 0);

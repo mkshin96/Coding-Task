@@ -1,6 +1,7 @@
 package me.mugon.lendit.domain.product;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class Product {
 
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     private boolean checkAmount;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)

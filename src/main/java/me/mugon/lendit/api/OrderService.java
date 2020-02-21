@@ -9,6 +9,7 @@ import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
 import me.mugon.lendit.web.dto.order.OrdersResponseDto;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,15 +68,17 @@ public class OrderService {
         }
         List<Orders> savedOrdersList = ordersRepository.saveAll(ordersList);
 
-        List<OrdersResource> collect = savedOrdersList.stream()
+        List<EntityModel<OrdersResponseDto>> collect = savedOrdersList.stream()
                 .map(e -> {
-                    OrdersResource ordersResource = new OrdersResource(new OrdersResponseDto(e));
-                    ordersResource.add(linkTo(ProductController.class).withRel("create-product"));
-                    ordersResource.add(linkTo(ProductController.class).withRel("query-products"));
-                    return ordersResource;
-                })
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(collect, HttpStatus.CREATED);
+                    EntityModel<OrdersResponseDto> entityModel = new EntityModel<>(new OrdersResponseDto(e));
+                    entityModel.add(linkTo(ProductController.class).slash(e.getId()).withSelfRel());
+                    entityModel.add(linkTo(ProductController.class).withRel("create-product"));
+                    entityModel.add(linkTo(ProductController.class).withRel("query-products"));
+                    return entityModel;
+                }).collect(Collectors.toList());
+
+        OrdersResource entityModels = new OrdersResource(collect);
+        return new ResponseEntity<>(entityModels, HttpStatus.CREATED);
     }
 
     private boolean verifyBalance(OrdersRequestDto requestDto, Account account) {

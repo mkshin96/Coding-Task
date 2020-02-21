@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,6 +18,11 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,7 +70,25 @@ class LoginControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("token").exists());
+                .andExpect(jsonPath("token").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andDo(document("login",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-products").description("link to query-products")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), requestFields(
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("password").description("사용자의 비밀번호")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("token").description("인증에 필요한 토큰"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
     }
 
     @Test

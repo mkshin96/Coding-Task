@@ -21,6 +21,11 @@ import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,7 +66,29 @@ class AccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("balance", is(50000000)))
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.login").exists());
+                .andExpect(jsonPath("_links.login").exists())
+                .andDo(document("create-account",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("login").description("link to login")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), requestFields(
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("password").description("사용자의 비밀번호"),
+                                fieldWithPath("balance").description("사용자의 예치금")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Location header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("식별자"),
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("balance").description("사용자의 예치금"),
+                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
+                                fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Account> findAll = accountRepository.findAll();
         assertEquals(findAll.get(0).getUsername(), username);
@@ -167,14 +194,36 @@ class AccountControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
                 .andExpect(status().isOk())
-
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("username", is(updatedUsername)))
                 .andExpect(jsonPath("balance", is(500000)))
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.delete-account").exists())
-                .andExpect(jsonPath("_links.query-products").exists());
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andDo(document("update-account",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("delete-account").description("link to delete account"),
+                                linkWithRel("query-products").description("link to query products")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                        ), requestFields(
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("password").description("사용자의 비밀번호"),
+                                fieldWithPath("balance").description("사용자의 예치금")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("식별자"),
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("balance").description("사용자의 예치금"),
+                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
+                                fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Account> findAll = accountRepository.findAll();
         assertEquals(findAll.get(0).getUsername(), updatedUsername);
@@ -253,7 +302,23 @@ class AccountControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.login").exists());
+                .andExpect(jsonPath("_links.login").exists())
+                .andDo(document("delete-account",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("login").description("link to login")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                        ), responseFields(
+                                fieldWithPath("id").description("식별자"),
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("balance").description("사용자의 예치금"),
+                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
+                                fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
 
         List<Account> all = accountRepository.findAll();
         assertEquals(all.size(), 0);

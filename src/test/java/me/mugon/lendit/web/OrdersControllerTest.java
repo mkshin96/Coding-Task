@@ -25,6 +25,9 @@ import java.util.stream.IntStream;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -63,7 +66,7 @@ class OrdersControllerTest extends BaseControllerTest {
         Account saveAnotherAccount = saveAccount(anotherAccount);
 
         List<OrdersRequestDto> list = new LinkedList<>();
-
+        OrdersRequestDto[] arrays = new OrdersRequestDto[10];
         IntStream.rangeClosed(1, 10).forEach(i -> {
             Product product = generateProduct(1000L, 10L, saveAccount);
             Product saveProduct = saveProduct(product);
@@ -73,6 +76,7 @@ class OrdersControllerTest extends BaseControllerTest {
                     .product(saveProduct)
                     .build();
             list.add(dto);
+            arrays[i-1] = dto;
         });
 
         assertEquals(list.size(), 10);
@@ -80,16 +84,70 @@ class OrdersControllerTest extends BaseControllerTest {
         mockMvc.perform(post(ordersUrl)
                 .header(HttpHeaders.AUTHORIZATION, generateJwt(saveAnotherAccount))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(list)))
+                .content(objectMapper.writeValueAsString(arrays)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("[*].id").exists())
-                .andExpect(jsonPath("[*].total").exists())
-                .andExpect(jsonPath("[*].number").exists())
-                .andExpect(jsonPath("[*].createdAt").exists())
-                .andExpect(jsonPath("[*].links[0].rel").exists())
-                .andExpect(jsonPath("[*].links[1].rel").exists())
-                .andExpect(jsonPath("[*].links[2].rel").exists());
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].id").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].total").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].number").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].createdAt").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.self").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.create-product").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.query-products").exists())
+                .andDo(document("create-orders",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                        ), requestFields(
+                                fieldWithPath("[*].total").description("총 금액"),
+                                fieldWithPath("[*].number").description("사고자 하는 상품의 개수"),
+                                fieldWithPath("[*].product.id").description("상품 식별자"),
+                                fieldWithPath("[*].product.name").description("상품 이름"),
+                                fieldWithPath("[*].product.price").description("상품 가격"),
+                                fieldWithPath("[*].product.amount").description("상품 재고 수량"),
+                                fieldWithPath("[*].product.createdAt").description("상품 등록 일시"),
+                                fieldWithPath("[*].product.ordersList").description("상품 주문 리스트"),
+                                fieldWithPath("[*].product.account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("[*].product.account.username").description("상품 등록자 이름"),
+                                fieldWithPath("[*].product.account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("[*].product.account.role").description("상품 등록자 역할"),
+                                fieldWithPath("[*].product.account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("[*].product.account.ordersSet").description("상품 둥록자 주문 리스트"),
+                                fieldWithPath("[*].product.account.productSet").description("상품 등록자 상품 등록 리스트"),
+                                fieldWithPath("[*].product.account").description("상품 등록자 식별자")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].id").description("주문정보 식별자"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].total").description("총 금액"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].number").description("사고자 하는 상품의 개수"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].createdAt").description("주문 일시"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.id").description("상품 식별자"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.name").description("상품 이름"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.price").description("상품 가격"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.createdAt").description("상품 등록 일시"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.amount").description("상품 재고 수량"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.ordersList").description("상품 주문 리스트"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account").description("상품 등록자 식별자"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.username").description("상품 등록자 이름"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.role").description("상품 등록자 등급"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.createdAt").description("상품 등록자 생성일시"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.ordersSet").description("상품 등록자 주문리스트"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.productSet").description("상품 등록자 상품 등록 리스트"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.id").description("주문자 식별자"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.username").description("주문자 이름"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.balance").description("주문자 예치금"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.role").description("주문자 등급"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.createdAt").description("주문자 생성일시"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.ordersSet").description("주문자 주문 리스트"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.productSet").description("주문자 상품 등록 리스트"),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*]._links.*.*").ignored(),
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account").description("주문자 식별자")
+                        )
+                ));
 
         List<Orders> all = ordersRepository.findAll();
         assertEquals(all.size(), 10);

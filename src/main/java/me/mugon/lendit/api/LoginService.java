@@ -2,7 +2,8 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.config.jwt.JwtProvider;
-import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.login.LoginResource;
+import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.JwtResponseDto;
 import me.mugon.lendit.web.dto.LoginDto;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
+import static me.mugon.lendit.api.error.ErrorMessageConstant.INVALIDIDORPASSWORD;
+import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
 @Service
@@ -35,7 +38,10 @@ public class LoginService {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         String jwt = jwtProvider.generateToken(loginDto.toEntity());
-        return new ResponseEntity<>(new JwtResponseDto(jwt), HttpStatus.OK);
+        JwtResponseDto jwtResponseDto = new JwtResponseDto(jwt);
+        LoginResource loginResource = new LoginResource(jwtResponseDto);
+        loginResource.add(linkTo(ProductController.class).withRel("query-products"));
+        return new ResponseEntity<>(loginResource, HttpStatus.OK);
     }
 
     private boolean authenticate(String username, String password) {

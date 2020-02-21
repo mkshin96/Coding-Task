@@ -71,13 +71,18 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.ok().body(accountResource);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);
         if (!optionalAccount.isPresent()) {
             return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Account account = optionalAccount.get();
-        return new ResponseEntity<>(new AccountResponseDto(account), HttpStatus.OK);
+        AccountResource accountResource = new AccountResource(new AccountResponseDto(account));
+        accountResource.add(linkTo(AccountController.class).slash(accountId).withRel("update-account"));
+        accountResource.add(linkTo(AccountController.class).slash(accountId).withRel("delete-account"));
+        accountResource.add(linkTo(ProductController.class).withRel("query-products"));
+        return new ResponseEntity<>(accountResource, HttpStatus.OK);
     }
 
     public Optional<Account> findById(Long accountId) {

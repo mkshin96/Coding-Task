@@ -107,15 +107,6 @@ class ProductControllerTest extends BaseControllerTest {
                                 fieldWithPath("account.balance").description("상품 등록자 예치금"),
                                 fieldWithPath("account.role").description("상품 등록자 역할"),
                                 fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
-                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
-                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
-                                fieldWithPath("account.productSet[*].id").ignored(),
-                                fieldWithPath("account.productSet[*].name").ignored(),
-                                fieldWithPath("account.productSet[*].price").ignored(),
-                                fieldWithPath("account.productSet[*].amount").ignored(),
-                                fieldWithPath("account.productSet[*].createdAt").ignored(),
-                                fieldWithPath("account.productSet[*].ordersList").ignored(),
-                                fieldWithPath("account.productSet[*].account").ignored(),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -241,15 +232,6 @@ class ProductControllerTest extends BaseControllerTest {
                                 fieldWithPath("account.balance").description("상품 등록자 예치금"),
                                 fieldWithPath("account.role").description("상품 등록자 역할"),
                                 fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
-                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
-                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
-                                fieldWithPath("account.productSet[*].id").ignored(),
-                                fieldWithPath("account.productSet[*].name").ignored(),
-                                fieldWithPath("account.productSet[*].price").ignored(),
-                                fieldWithPath("account.productSet[*].amount").ignored(),
-                                fieldWithPath("account.productSet[*].createdAt").ignored(),
-                                fieldWithPath("account.productSet[*].ordersList").ignored(),
-                                fieldWithPath("account.productSet[*].account").ignored(),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -378,7 +360,7 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.create-product").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
-                .andDo(document("update-product",
+                .andDo(document("delete-product",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-products").description("link to query products"),
@@ -396,15 +378,6 @@ class ProductControllerTest extends BaseControllerTest {
                                 fieldWithPath("account.balance").description("상품 등록자 예치금"),
                                 fieldWithPath("account.role").description("상품 등록자 역할"),
                                 fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
-                                fieldWithPath("account.ordersSet").description("상품 등록자 주문 리스트"),
-                                fieldWithPath("account.productSet").description("상품 등록자 상품 등록 리스트"),
-                                fieldWithPath("account.productSet[*].id").ignored(),
-                                fieldWithPath("account.productSet[*].name").ignored(),
-                                fieldWithPath("account.productSet[*].price").ignored(),
-                                fieldWithPath("account.productSet[*].amount").ignored(),
-                                fieldWithPath("account.productSet[*].createdAt").ignored(),
-                                fieldWithPath("account.productSet[*].ordersList").ignored(),
-                                fieldWithPath("account.productSet[*].account").ignored(),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -458,7 +431,50 @@ class ProductControllerTest extends BaseControllerTest {
 
         mockMvc.perform(get(productUrl))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].id").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].name").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].price").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].amount").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].createdAt").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].account.id").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].account.username").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].account.balance").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].account.role").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*].account.createdAt").exists())
+                .andExpect(jsonPath("_embedded.productResponseDtoList[*]._links.self.href").exists())
+                .andExpect(jsonPath("_links.first").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.next").exists())
+                .andExpect(jsonPath("_links.last").exists())
+                .andDo(document("query-products",
+                        links(
+                                linkWithRel("first").description("link to first page"),
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("next").description("link to next page"),
+                                linkWithRel("last").description("link to last page")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("_embedded.productResponseDtoList[*].id").description("상품 식별자"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].name").description("상품 이름"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].price").description("상품 가격"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].amount").description("상품 재고 수량"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].createdAt").description("상품 등록 일시"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account").description("상품 등록자 식별자"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account.username").description("상품 등록자 이름"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account.role").description("상품 등록자 역할"),
+                                fieldWithPath("_embedded.productResponseDtoList[*].account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("_embedded.productResponseDtoList[*]._links.self.href").description("link to self"),
+                                fieldWithPath("_links.*.*").ignored(),
+                                fieldWithPath("page.size").description("한 페이지의 항목 개수"),
+                                fieldWithPath("page.totalElements").description("총 항목 개수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 개수"),
+                                fieldWithPath("page.number").description("현재 페이지 번호(0부터 시작)")
+                        )
+                ));
     }
 
     private Product saveProduct(long price, long amount, Account account) {

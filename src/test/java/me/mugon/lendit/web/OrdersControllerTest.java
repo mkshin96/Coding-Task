@@ -112,8 +112,6 @@ class OrdersControllerTest extends BaseControllerTest {
                                 fieldWithPath("[*].product.account.balance").description("상품 등록자 예치금"),
                                 fieldWithPath("[*].product.account.role").description("상품 등록자 역할"),
                                 fieldWithPath("[*].product.account.createdAt").description("상품 등록자 생성 일시"),
-                                fieldWithPath("[*].product.account.ordersSet").description("상품 둥록자 주문 리스트"),
-                                fieldWithPath("[*].product.account.productSet").description("상품 등록자 상품 등록 리스트"),
                                 fieldWithPath("[*].product.account").description("상품 등록자 식별자")
                         ), responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
@@ -135,15 +133,11 @@ class OrdersControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.balance").description("상품 등록자 예치금"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.role").description("상품 등록자 등급"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.createdAt").description("상품 등록자 생성일시"),
-                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.ordersSet").description("상품 등록자 주문리스트"),
-                                fieldWithPath("_embedded.ordersResponseDtoList[*].product.account.productSet").description("상품 등록자 상품 등록 리스트"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.id").description("주문자 식별자"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.username").description("주문자 이름"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.balance").description("주문자 예치금"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.role").description("주문자 등급"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.createdAt").description("주문자 생성일시"),
-                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.ordersSet").description("주문자 주문 리스트"),
-                                fieldWithPath("_embedded.ordersResponseDtoList[*].account.productSet").description("주문자 상품 등록 리스트"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*]._links.*.*").ignored(),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account").description("주문자 식별자")
                         )
@@ -285,10 +279,10 @@ class OrdersControllerTest extends BaseControllerTest {
                     .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("[*].id").exists())
-                .andExpect(jsonPath("[*].total").exists())
-                .andExpect(jsonPath("[*].number").exists())
-                .andExpect(jsonPath("[*].createdAt").exists());
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].id").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].total").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].number").exists())
+                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].createdAt").exists());
 
         mockMvc.perform(post(ordersUrl)
                 .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))

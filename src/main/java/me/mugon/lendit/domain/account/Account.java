@@ -36,9 +36,11 @@ public class Account {
 
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Orders> ordersSet;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Product> productSet;
 

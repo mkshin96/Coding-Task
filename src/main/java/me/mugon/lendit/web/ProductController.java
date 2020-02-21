@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.api.ProductService;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.CurrentUser;
+import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +30,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<?> getProductList() {
-        return productService.getProductList();
+    public ResponseEntity<?> getProductList(Pageable pageable, PagedResourcesAssembler<Product> assembler) {
+        return productService.getProductList(pageable, assembler);
     }
 
     @PostMapping

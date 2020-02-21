@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -84,8 +85,9 @@ class AccountControllerTest extends BaseControllerTest {
                                 fieldWithPath("id").description("식별자"),
                                 fieldWithPath("username").description("사용자가 사용할 이름"),
                                 fieldWithPath("balance").description("사용자의 예치금"),
-                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
                                 fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("ordersSet").description("사용자의 주문 리스트"),
+                                fieldWithPath("productSet").description("사용자가 등록한 상품 리스트"),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -219,8 +221,9 @@ class AccountControllerTest extends BaseControllerTest {
                                 fieldWithPath("id").description("식별자"),
                                 fieldWithPath("username").description("사용자가 사용할 이름"),
                                 fieldWithPath("balance").description("사용자의 예치금"),
-                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
                                 fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("ordersSet").description("사용자의 주문 리스트"),
+                                fieldWithPath("productSet").description("사용자가 등록한 상품 리스트"),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -307,15 +310,17 @@ class AccountControllerTest extends BaseControllerTest {
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("login").description("link to login")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization header")
                         ), responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ), responseFields(
                                 fieldWithPath("id").description("식별자"),
                                 fieldWithPath("username").description("사용자가 사용할 이름"),
                                 fieldWithPath("balance").description("사용자의 예치금"),
-                                fieldWithPath("orderList").description("사용자의 주문 리스트"),
                                 fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("ordersSet").description("사용자의 주문 리스트"),
+                                fieldWithPath("productSet").description("사용자가 등록한 상품 리스트"),
                                 fieldWithPath("_links.*.*").ignored()
                         )
                 ));
@@ -342,13 +347,41 @@ class AccountControllerTest extends BaseControllerTest {
         Account savedAccount = saveAccount();
 
         mockMvc.perform(get(accountUrl + "/{accountId}", savedAccount.getId())
+                .header(HttpHeaders.ACCEPT, MediaTypes.HAL_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").isNotEmpty())
                 .andExpect(jsonPath("username").isNotEmpty())
                 .andExpect(jsonPath("balance").isNotEmpty())
-                .andExpect(jsonPath("createdAt").isNotEmpty());
+                .andExpect(jsonPath("createdAt").isNotEmpty())
+                .andExpect(jsonPath("ordersSet").exists())
+                .andExpect(jsonPath("productSet").exists())
+                .andExpect(jsonPath("_links.update-account").exists())
+                .andExpect(jsonPath("_links.delete-account").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andDo(document("get-account",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("update-account").description("link to update account"),
+                                linkWithRel("delete-account").description("link to delete account"),
+                                linkWithRel("query-products").description("link to query products")
+                        ), requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization header"),
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept header")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("식별자"),
+                                fieldWithPath("username").description("사용자가 사용할 이름"),
+                                fieldWithPath("balance").description("사용자의 예치금"),
+                                fieldWithPath("ordersSet").description("사용자의 주문 리스트"),
+                                fieldWithPath("productSet").description("사용자가 등록한 상품 리스트"),
+                                fieldWithPath("createdAt").description("생성 일시"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
     }
 
     @Test

@@ -9,6 +9,10 @@ import me.mugon.lendit.web.OrdersController;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
 import me.mugon.lendit.web.dto.product.ProductResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -79,12 +82,15 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getProductList() {
-        List<Product> allProduct = productRepository.findAll();
-        List<ProductResponseDto> collect = allProduct.stream()
-                .map(ProductResponseDto::new)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(collect, HttpStatus.OK);
+    public ResponseEntity<?> getProductList(Pageable pageable, PagedResourcesAssembler<Product> assembler) {
+        Page<Product> all = productRepository.findAll(pageable);
+        PagedModel<ProductResource> productResources = assembler.toModel(all, e -> new ProductResource(new ProductResponseDto(e)));
+
+        return ResponseEntity.ok(productResources);
+//            allProduct.stream()
+//                .map(e -> new ProductResource(new ProductResponseDto(e)))
+//                .collect(Collectors.toList());
+//        return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 
     Optional<Product> findById(Long productId) {

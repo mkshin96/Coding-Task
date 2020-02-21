@@ -35,7 +35,7 @@ public class Product {
 
     private boolean checkAmount;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Orders> ordersList;
 
     @ManyToOne

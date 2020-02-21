@@ -5,6 +5,7 @@ import me.mugon.lendit.api.ProductService;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.CurrentUser;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -19,7 +20,7 @@ import java.util.Map;
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/products")
+@RequestMapping(value = "/api/products", produces = MediaTypes.HAL_JSON_VALUE)
 @RestController
 public class ProductController {
 

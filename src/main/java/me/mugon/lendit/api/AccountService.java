@@ -4,8 +4,13 @@ import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountAdapter;
 import me.mugon.lendit.domain.account.AccountRepository;
+import me.mugon.lendit.domain.account.AccountResource;
+import me.mugon.lendit.web.AccountController;
+import me.mugon.lendit.web.LoginController;
+import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.account.AccountRequestDto;
 import me.mugon.lendit.web.dto.account.AccountResponseDto;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
 @Service
@@ -31,7 +37,11 @@ public class AccountService implements UserDetailsService {
             return new ResponseEntity<>(getErrorMap(DUPLICATEDUSER), HttpStatus.BAD_REQUEST);
         }
         Account savedAccount = accountRepository.save(requestDto.toEntity());
-        return new ResponseEntity<>(new AccountResponseDto(savedAccount), HttpStatus.CREATED);
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(savedAccount.getId());
+        AccountResponseDto accountResponseDto = new AccountResponseDto(savedAccount);
+        AccountResource accountResource = new AccountResource(accountResponseDto);
+        accountResource.add(linkTo(LoginController.class).withRel("login"));
+        return ResponseEntity.created(selfLinkBuilder.toUri()).body(accountResource);
     }
 
     @Transactional
@@ -42,7 +52,11 @@ public class AccountService implements UserDetailsService {
         }
         Account account = optionalAccount.get();
         account.update(requestDto);
-        return new ResponseEntity<>(new AccountResponseDto(account), HttpStatus.OK);
+        AccountResponseDto accountResponseDto = new AccountResponseDto(account);
+        AccountResource accountResource = new AccountResource(accountResponseDto);
+        accountResource.add(linkTo(AccountController.class).slash(accountResponseDto.getId()).withRel("delete-account"));
+        accountResource.add(linkTo(ProductController.class).withRel("query-products"));
+        return new ResponseEntity<>(accountResource, HttpStatus.OK);
     }
 
     @Transactional
@@ -52,7 +66,9 @@ public class AccountService implements UserDetailsService {
             return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         accountRepository.delete(optionalAccount.get());
-        return ResponseEntity.ok().build();
+        AccountResource accountResource = new AccountResource(new AccountResponseDto(optionalAccount.get()));
+        accountResource.add(linkTo(LoginController.class).withRel("login"));
+        return ResponseEntity.ok().body(accountResource);
     }
 
     public ResponseEntity<?> getAccount(Long accountId) {

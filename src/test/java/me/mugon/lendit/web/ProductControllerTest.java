@@ -24,8 +24,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class ProductControllerTest extends BaseControllerTest {
 
@@ -65,12 +64,19 @@ class ProductControllerTest extends BaseControllerTest {
                     .content(objectMapper.writeValueAsString(productRequestDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("name", is(name)))
                 .andExpect(jsonPath("price", is(15000)))
                 .andExpect(jsonPath("amount", is(30)))
                 .andExpect(jsonPath("createdAt").exists())
-                .andExpect(jsonPath("account.username", is(account.getUsername())));
+                .andExpect(jsonPath("account.username", is(account.getUsername())))
+                .andExpect(jsonPath("account.password").doesNotExist())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.update-product").exists())
+                .andExpect(jsonPath("_links.delete-product").exists())
+                .andExpect(jsonPath("_links.order").exists());
 
         List<Product> findAll = productRepository.findAll();
         assertEquals(findAll.get(0).getName(), name);
@@ -162,7 +168,11 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("name", is(updatedName)))
                 .andExpect(jsonPath("price", is(15000)))
                 .andExpect(jsonPath("amount", is(30)))
-                .andExpect(jsonPath("createdAt").exists());
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.delete-product").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.create-product").exists());
 
         List<Product> findAll = productRepository.findAll();
         assertEquals(findAll.get(0).getName(), updatedName);
@@ -284,7 +294,10 @@ class ProductControllerTest extends BaseControllerTest {
         mockMvc.perform(delete(productUrl + "/{productId}", savedProduct.getId())
                 .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.create-product").exists())
+                .andExpect(jsonPath("_links.query-products").exists());
 
         List<Product> all = productRepository.findAll();
         assertEquals(all.size(), 0);

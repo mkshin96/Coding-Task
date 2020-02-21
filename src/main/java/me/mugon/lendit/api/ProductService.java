@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
+import me.mugon.lendit.domain.product.ProductResource;
+import me.mugon.lendit.web.OrdersController;
+import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
 import me.mugon.lendit.web.dto.product.ProductResponseDto;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
 @Service
@@ -27,7 +32,14 @@ public class ProductService {
         Product product = productRequestDto.toEntity(currentUser);
         product.mapUser(currentUser);
         Product savedProduct = productRepository.save(product);
-        return new ResponseEntity<>(new ProductResponseDto(savedProduct), HttpStatus.CREATED);
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(ProductController.class).slash(savedProduct.getId());
+        ProductResponseDto responseDto = new ProductResponseDto(savedProduct);
+        ProductResource productResource = new ProductResource(responseDto);
+        productResource.add(linkTo(ProductController.class).withRel("query-products"));
+        productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("update-product"));
+        productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("delete-product"));
+        productResource.add(linkTo(OrdersController.class).withRel("order"));
+        return ResponseEntity.created(selfLinkBuilder.toUri()).body(productResource);
     }
 
     @Transactional
@@ -41,7 +53,12 @@ public class ProductService {
             return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         product.update(productRequestDto);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        ProductResponseDto responseDto = new ProductResponseDto(product);
+        ProductResource productResource = new ProductResource(responseDto);
+        productResource.add(linkTo(ProductController.class).withRel("query-products"));
+        productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("delete-product"));
+        productResource.add(linkTo(ProductController.class).withRel("create-product"));
+        return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
     @Transactional
@@ -55,7 +72,10 @@ public class ProductService {
             return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         productRepository.delete(product);
-        return ResponseEntity.ok().build();
+        ProductResource productResource = new ProductResource(new ProductResponseDto(product));
+        productResource.add(linkTo(ProductController.class).withRel("create-product"));
+        productResource.add(linkTo(ProductController.class).withRel("query-products"));
+        return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)

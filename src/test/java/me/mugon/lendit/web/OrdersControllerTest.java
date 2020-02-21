@@ -86,7 +86,10 @@ class OrdersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("[*].id").exists())
                 .andExpect(jsonPath("[*].total").exists())
                 .andExpect(jsonPath("[*].number").exists())
-                .andExpect(jsonPath("[*].createdAt").exists());
+                .andExpect(jsonPath("[*].createdAt").exists())
+                .andExpect(jsonPath("[*].links[0].rel").exists())
+                .andExpect(jsonPath("[*].links[1].rel").exists())
+                .andExpect(jsonPath("[*].links[2].rel").exists());
 
         List<Orders> all = ordersRepository.findAll();
         assertEquals(all.size(), 10);

@@ -1,7 +1,6 @@
 package me.mugon.lendit.web;
 
 import me.mugon.lendit.common.BaseControllerTest;
-import me.mugon.lendit.config.jwt.JwtProvider;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountRepository;
 import me.mugon.lendit.domain.account.Role;
@@ -24,20 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class AccountControllerTest extends BaseControllerTest {
 
     @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private JwtProvider jwtProvider;
-
     private final String accountUrl = "/api/accounts";
-
-    private final String BEARER = "Bearer ";
 
     @AfterEach
     void clean() {
@@ -62,10 +55,13 @@ class AccountControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(accountRequestDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("username", is(username)))
                 .andExpect(jsonPath("balance", is(50000000)))
-                .andExpect(jsonPath("createdAt").exists());
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.login").exists());
 
         List<Account> findAll = accountRepository.findAll();
         assertEquals(findAll.get(0).getUsername(), username);
@@ -135,11 +131,14 @@ class AccountControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(accountRequestDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath(username, is(username)))
                 .andExpect(jsonPath(password).doesNotExist())
                 .andExpect(jsonPath("balance", is(500000000)))
-                .andExpect(jsonPath("createdAt").exists());
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.login").exists());
 
         mockMvc.perform(post(accountUrl)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,10 +167,14 @@ class AccountControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(updateAccount)))
                 .andDo(print())
                 .andExpect(status().isOk())
+
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("username", is(updatedUsername)))
                 .andExpect(jsonPath("balance", is(500000)))
-                .andExpect(jsonPath("createdAt").exists());
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.delete-account").exists())
+                .andExpect(jsonPath("_links.query-products").exists());
 
         List<Account> findAll = accountRepository.findAll();
         assertEquals(findAll.get(0).getUsername(), updatedUsername);
@@ -248,7 +251,9 @@ class AccountControllerTest extends BaseControllerTest {
         mockMvc.perform(delete(accountUrl + "/{accountId}", account.getId())
                 .header(HttpHeaders.AUTHORIZATION, generateJwt(account)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.login").exists());
 
         List<Account> all = accountRepository.findAll();
         assertEquals(all.size(), 0);

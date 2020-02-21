@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
+import me.mugon.lendit.domain.order.OrdersResource;
 import me.mugon.lendit.domain.product.Product;
+import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
 import me.mugon.lendit.web.dto.order.OrdersResponseDto;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
 @Service
@@ -62,11 +65,17 @@ public class OrderService {
             Orders orders = order.toEntity(currentUser);
             ordersList.add(orders);
         }
-        ordersRepository.saveAll(ordersList);
-        List<OrdersResponseDto> collect = ordersList.stream()
-                .map(OrdersResponseDto::new)
+        List<Orders> savedOrdersList = ordersRepository.saveAll(ordersList);
+
+        List<OrdersResource> collect = savedOrdersList.stream()
+                .map(e -> {
+                    OrdersResource ordersResource = new OrdersResource(new OrdersResponseDto(e));
+                    ordersResource.add(linkTo(ProductController.class).withRel("create-product"));
+                    ordersResource.add(linkTo(ProductController.class).withRel("query-products"));
+                    return ordersResource;
+                })
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(collect ,HttpStatus.CREATED);
+        return new ResponseEntity<>(collect, HttpStatus.CREATED);
     }
 
     private boolean verifyBalance(OrdersRequestDto requestDto, Account account) {

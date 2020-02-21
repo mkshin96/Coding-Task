@@ -1,6 +1,7 @@
 package me.mugon.lendit.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import me.mugon.lendit.domain.order.Orders;
@@ -23,6 +24,7 @@ public class Account {
     private String username;
 
     @Column
+    @JsonIgnore
     private String password;
 
     @Column

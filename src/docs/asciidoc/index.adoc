@@ -50,14 +50,18 @@
 | `201 Created`
 | 새 리소스를 성공적으로 생성함. 응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
 
-| `204 No Content`
-| 기존 리소스를 성공적으로 수정함.
-
 | `400 Bad Request`
 | 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
 
+| `401 UnAuthorized`
+| 해당 리소스에 유효한 인증 자격 증명이 없기 때문에 요청이 적용되지 않았음
+
 | `404 Not Found`
 | 요청한 리소스가 없음.
+
+| `500 Server Internal Server error`
+| 서버 내부에서 오류 발생
+
 |===
 
 [[overview-errors]]
@@ -110,7 +114,7 @@ operation::login[snippets='curl-request,http-request,request-headers,request-fie
 
 사용자 리소스는 사용자를 만들거나 조회할 때 사용한다.
 
-[[resources-accounts]]
+[[resources-account-get]]
 === 사용자 개별 조회
 
 `GET` 요청을 사용하여 개별적으로 사용자를 조회할 수 있다.

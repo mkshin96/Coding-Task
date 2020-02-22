@@ -2,6 +2,7 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.config.jwt.JwtProvider;
+import me.mugon.lendit.domain.BaseValidator;
 import me.mugon.lendit.domain.login.LoginResource;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.JwtResponseDto;
@@ -14,13 +15,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static me.mugon.lendit.api.error.ErrorMessageConstant.INVALIDIDORPASSWORD;
-import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RequiredArgsConstructor
@@ -31,11 +26,11 @@ public class LoginService {
 
     private final JwtProvider jwtProvider;
 
+    private final BaseValidator baseValidator;
+
     public ResponseEntity<?> login(LoginDto loginDto) {
         if (authenticate(loginDto.getUsername(), loginDto.getPassword())) {
-            Map<String, List<String>> errors = new HashMap<>();
-            errors.put(KEY, Arrays.asList(INVALIDIDORPASSWORD));
-            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDIDORPASSWORD), HttpStatus.BAD_REQUEST);
         }
         String jwt = jwtProvider.generateToken(loginDto.toEntity());
         JwtResponseDto jwtResponseDto = new JwtResponseDto(jwt);

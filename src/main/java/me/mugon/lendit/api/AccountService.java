@@ -1,6 +1,7 @@
 package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
+import me.mugon.lendit.domain.BaseValidator;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.AccountAdapter;
 import me.mugon.lendit.domain.account.AccountRepository;
@@ -30,11 +31,13 @@ public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
 
+    private final BaseValidator baseValidator;
+
     @Transactional
     public ResponseEntity<?> saveAccount(AccountRequestDto requestDto) {
         Optional<Account> findByUsername = accountRepository.findByUsername(requestDto.getUsername());
         if (findByUsername.isPresent()) {
-            return new ResponseEntity<>(getErrorMap(DUPLICATEDUSER), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(DUPLICATEDUSER), HttpStatus.BAD_REQUEST);
         }
         Account savedAccount = accountRepository.save(requestDto.toEntity());
         WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(savedAccount.getId());
@@ -48,7 +51,7 @@ public class AccountService implements UserDetailsService {
     public ResponseEntity<?> updateAccount(Long accountId, AccountRequestDto requestDto) {
         Optional<Account> optionalAccount = findById(accountId);
         if (!optionalAccount.isPresent()) {
-            return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Account account = optionalAccount.get();
         account.update(requestDto);
@@ -63,7 +66,7 @@ public class AccountService implements UserDetailsService {
     public ResponseEntity<?> deleteAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);
         if (!optionalAccount.isPresent()) {
-            return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         accountRepository.delete(optionalAccount.get());
         AccountResource accountResource = new AccountResource(new AccountResponseDto(optionalAccount.get()));
@@ -75,7 +78,7 @@ public class AccountService implements UserDetailsService {
     public ResponseEntity<?> getAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);
         if (!optionalAccount.isPresent()) {
-            return new ResponseEntity<>(getErrorMap(USERNOTFOUND), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Account account = optionalAccount.get();
         AccountResource accountResource = new AccountResource(new AccountResponseDto(account));
@@ -87,12 +90,6 @@ public class AccountService implements UserDetailsService {
 
     public Optional<Account> findById(Long accountId) {
         return accountRepository.findById(accountId);
-    }
-
-    private Map<String, List<String>> getErrorMap(String message) {
-        Map<String, List<String>> errors = new HashMap<>();
-        errors.put(KEY, Arrays.asList(message));
-        return errors;
     }
 
     @Override

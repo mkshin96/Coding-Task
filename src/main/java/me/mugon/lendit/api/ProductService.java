@@ -87,10 +87,6 @@ public class ProductService {
         PagedModel<ProductResource> productResources = assembler.toModel(all, e -> new ProductResource(new ProductResponseDto(e)));
 
         return ResponseEntity.ok(productResources);
-//            allProduct.stream()
-//                .map(e -> new ProductResource(new ProductResponseDto(e)))
-//                .collect(Collectors.toList());
-//        return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 
     Optional<Product> findById(Long productId) {

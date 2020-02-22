@@ -73,10 +73,12 @@ class LoginControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("token").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("login",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("query-products").description("link to query-products")
+                                linkWithRel("query-products").description("link to query-products"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ), requestFields(

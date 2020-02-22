@@ -1,5 +1,6 @@
 package me.mugon.lendit.web;
 
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ public class IndexController {
     public RepresentationModel index() {
         RepresentationModel index = new RepresentationModel();
         index.add(linkTo(LoginController.class).withRel("login"));
+        index.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-index-access").withRel("profile"));
         return index;
     }
 }

@@ -11,6 +11,7 @@ import me.mugon.lendit.web.LoginController;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.account.AccountRequestDto;
 import me.mugon.lendit.web.dto.account.AccountResponseDto;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,7 @@ public class AccountService implements UserDetailsService {
         AccountResponseDto accountResponseDto = new AccountResponseDto(savedAccount);
         AccountResource accountResource = new AccountResource(accountResponseDto);
         accountResource.add(linkTo(LoginController.class).withRel("login"));
+        accountResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-accounts-create").withRel("profile"));
         return ResponseEntity.created(selfLinkBuilder.toUri()).body(accountResource);
     }
 
@@ -59,6 +61,7 @@ public class AccountService implements UserDetailsService {
         AccountResource accountResource = new AccountResource(accountResponseDto);
         accountResource.add(linkTo(AccountController.class).slash(accountResponseDto.getId()).withRel("delete-account"));
         accountResource.add(linkTo(ProductController.class).withRel("query-products"));
+        accountResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-accounts-update").withRel("profile"));
         return new ResponseEntity<>(accountResource, HttpStatus.OK);
     }
 
@@ -71,6 +74,7 @@ public class AccountService implements UserDetailsService {
         accountRepository.delete(optionalAccount.get());
         AccountResource accountResource = new AccountResource(new AccountResponseDto(optionalAccount.get()));
         accountResource.add(linkTo(LoginController.class).withRel("login"));
+        accountResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-accounts-delete").withRel("profile"));
         return ResponseEntity.ok().body(accountResource);
     }
 
@@ -85,6 +89,7 @@ public class AccountService implements UserDetailsService {
         accountResource.add(linkTo(AccountController.class).slash(accountId).withRel("update-account"));
         accountResource.add(linkTo(AccountController.class).slash(accountId).withRel("delete-account"));
         accountResource.add(linkTo(ProductController.class).withRel("query-products"));
+        accountResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-account-get").withRel("profile"));
         return new ResponseEntity<>(accountResource, HttpStatus.OK);
     }
 

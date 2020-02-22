@@ -26,6 +26,8 @@ import java.util.stream.IntStream;
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,7 +70,7 @@ class OrdersControllerTest extends BaseControllerTest {
         List<OrdersRequestDto> list = new LinkedList<>();
         OrdersRequestDto[] arrays = new OrdersRequestDto[10];
         IntStream.rangeClosed(1, 10).forEach(i -> {
-            Product product = generateProduct(1000L, 10L, saveAccount);
+            Product product = generateProduct_need_index(i,1000L, 10L, saveAccount);
             Product saveProduct = saveProduct(product);
             OrdersRequestDto dto = OrdersRequestDto.builder()
                     .number(3L)
@@ -92,10 +94,17 @@ class OrdersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].number").exists())
                 .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].createdAt").exists())
                 .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.self").exists())
-                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.create-product").exists())
-                .andExpect(jsonPath("_embedded.ordersResponseDtoList[*]._links.query-products").exists())
+                .andExpect(jsonPath("_links.create-product").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.self").exists())
                 .andDo(document("create-orders",
-                        requestHeaders(
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("create-product").description("link to create-product"),
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("profile").description("link to profile")
+                        ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
                         ), requestFields(
@@ -139,7 +148,8 @@ class OrdersControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.role").description("주문자 등급"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*].account.createdAt").description("주문자 생성일시"),
                                 fieldWithPath("_embedded.ordersResponseDtoList[*]._links.*.*").ignored(),
-                                fieldWithPath("_embedded.ordersResponseDtoList[*].account").description("주문자 식별자")
+                                fieldWithPath("_embedded.ordersResponseDtoList[*].account").description("주문자 식별자"),
+                                fieldWithPath("_links.*.*").ignored()
                         )
                 ));
 
@@ -293,6 +303,30 @@ class OrdersControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath(KEY).exists());
     }
 
+    @Test
+    @DisplayName("상품재고가 처음부터 0개 일 때 구매가 불가능한지 테스트")
+    void 상품재고가_처음부터_0일때() {
+        long balance = 300000L;
+        long price = 10000L;
+        long number = 30L;
+        long amount = 30L;
+
+        Account account = generateAccount(username, password, balance);
+        Account anotherAccount = generateAccount(anotherUsername, password, balance);
+        Account savedAccount = saveAccount(account);
+        Account anotherSavedAccount = saveAccount(anotherAccount);
+
+        Product product = generateProduct(price, amount, savedAccount);
+        Product savedProduct = saveProduct(product);
+
+        OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
+                .number(number)
+                .total(number * price)
+                .product(savedProduct)
+                .build();
+
+        List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
+    }
 
     private Product saveProduct(Product product) {
         return productRepository.save(product);
@@ -305,6 +339,15 @@ class OrdersControllerTest extends BaseControllerTest {
                     .amount(amount)
                     .account(account)
                     .createdAt(LocalDateTime.now()).build();
+    }
+
+    private Product generateProduct_need_index(int index, long price, long amount, Account account) {
+        return Product.builder()
+                .name("열혈 자바 프로그래밍" + index)
+                .price(price)
+                .amount(amount)
+                .account(account)
+                .createdAt(LocalDateTime.now()).build();
     }
 
     private Account saveAccount(Account account) {

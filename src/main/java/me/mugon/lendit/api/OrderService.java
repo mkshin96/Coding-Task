@@ -7,10 +7,12 @@ import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.order.OrdersResource;
 import me.mugon.lendit.domain.product.Product;
+import me.mugon.lendit.web.OrdersController;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
 import me.mugon.lendit.web.dto.order.OrdersResponseDto;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -78,12 +80,14 @@ public class OrderService {
                 .map(e -> {
                     EntityModel<OrdersResponseDto> entityModel = new EntityModel<>(new OrdersResponseDto(e));
                     entityModel.add(linkTo(ProductController.class).slash(e.getId()).withSelfRel());
-                    entityModel.add(linkTo(ProductController.class).withRel("create-product"));
-                    entityModel.add(linkTo(ProductController.class).withRel("query-products"));
                     return entityModel;
                 }).collect(Collectors.toList());
 
         OrdersResource entityModels = new OrdersResource(collect);
+        entityModels.add(linkTo(OrdersController.class).withSelfRel());
+        entityModels.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-orders-create").withRel("profile"));
+        entityModels.add(linkTo(ProductController.class).withRel("create-product"));
+        entityModels.add(linkTo(ProductController.class).withRel("query-products"));
         return new ResponseEntity<>(entityModels, HttpStatus.CREATED);
     }
 }

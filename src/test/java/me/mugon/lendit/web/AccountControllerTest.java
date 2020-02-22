@@ -46,7 +46,7 @@ class AccountControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("정상적으로 유저가 등록되는지 테스트")
     void 유저_등록_테스트() throws Exception {
-        String username = "사용자";
+        String username = "username";
         String password = "password";
         long balance = 50000000L;
 
@@ -68,10 +68,12 @@ class AccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.login").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("create-account",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("login").description("link to login")
+                                linkWithRel("login").description("link to login"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ), requestFields(
@@ -181,7 +183,7 @@ class AccountControllerTest extends BaseControllerTest {
     @DisplayName("정상적으로 유저가 수정되는지 테스트")
     void 유저_수정_테스트() throws Exception {
         Account savedAccount = saveAccount();
-        String updatedUsername = "수정된 사용자";
+        String updatedUsername = "updatedUser";
         long balance = 500000L;
 
         AccountRequestDto updateAccount = AccountRequestDto.builder()
@@ -203,11 +205,13 @@ class AccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.delete-account").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("update-account",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("delete-account").description("link to delete account"),
-                                linkWithRel("query-products").description("link to query products")
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
@@ -306,10 +310,12 @@ class AccountControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.login").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("delete-account",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("login").description("link to login")
+                                linkWithRel("login").description("link to login"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization header")
                         ), responseHeaders(
@@ -361,12 +367,14 @@ class AccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.delete-account").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
                 .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("get-account",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("update-account").description("link to update account"),
                                 linkWithRel("delete-account").description("link to delete account"),
-                                linkWithRel("query-products").description("link to query products")
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization header"),
                                 headerWithName(HttpHeaders.ACCEPT).description("Accept header")
@@ -398,7 +406,7 @@ class AccountControllerTest extends BaseControllerTest {
 
     private Account saveAccount() {
         return accountRepository.save(Account.builder()
-                .username("사용자")
+                .username("username")
                 .password("password")
                 .balance(500000L)
                 .createdAt(LocalDateTime.now())

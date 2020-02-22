@@ -12,6 +12,7 @@ import me.mugon.lendit.web.dto.product.ProductResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class ProductService {
         productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("update-product"));
         productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("delete-product"));
         productResource.add(linkTo(OrdersController.class).withRel("order"));
+        productResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-products-create").withRel("profile"));
         return ResponseEntity.created(selfLinkBuilder.toUri()).body(productResource);
     }
 
@@ -61,6 +63,7 @@ public class ProductService {
         productResource.add(linkTo(ProductController.class).withRel("query-products"));
         productResource.add(linkTo(ProductController.class).slash(responseDto.getId()).withRel("delete-product"));
         productResource.add(linkTo(ProductController.class).withRel("create-product"));
+        productResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-products-update").withRel("profile"));
         return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
@@ -78,6 +81,7 @@ public class ProductService {
         ProductResource productResource = new ProductResource(new ProductResponseDto(product));
         productResource.add(linkTo(ProductController.class).withRel("create-product"));
         productResource.add(linkTo(ProductController.class).withRel("query-products"));
+        productResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-products-delete").withRel("profile"));
         return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
@@ -85,7 +89,7 @@ public class ProductService {
     public ResponseEntity<?> getProductList(Pageable pageable, PagedResourcesAssembler<Product> assembler) {
         Page<Product> all = productRepository.findAll(pageable);
         PagedModel<ProductResource> productResources = assembler.toModel(all, e -> new ProductResource(new ProductResponseDto(e)));
-
+        productResources.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-products-list").withRel("profile"));
         return ResponseEntity.ok(productResources);
     }
 

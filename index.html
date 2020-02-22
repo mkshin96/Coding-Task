@@ -755,12 +755,15 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 99
+Content-Length: 207
 
 {
   "_links" : {
     "login" : {
       "href" : "http://localhost:8080/api/login"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-index-access"
     }
   }
 }</code></pre>
@@ -784,6 +787,10 @@ Content-Length: 99
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>login</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to login</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
 </tr>
 </tbody>
 </table>
@@ -893,16 +900,19 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 393
+Content-Length: 502
 
 {
-  "token" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjpudWxsLCJleHAiOjE1ODIzMTIzMjYsImlhdCI6MTU4MjI5NDMyNn0.OD8UhBwrcaS37QQo5T9KT0YxiuvcDOf6MAZ4TW4NdJD9_VfTXx3IS4mLHMBlZAHVEk8UeXmM3i3XX9HqxqFhfA",
+  "token" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjpudWxsLCJleHAiOjE1ODIzODUyMDUsImlhdCI6MTU4MjM2NzIwNX0.ZgYMPO1ibsCnJRjLW4vw7LPrVh71kq2-EtItqBi3hxjivSqhIt5n9KHfaLtZphkilF-N1LhjRhFaiytXmqqe_w",
   "_links" : {
     "self" : {
       "href" : "http://localhost:8080/api/login"
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-login-request"
     }
   }
 }</code></pre>
@@ -976,6 +986,10 @@ Content-Length: 393
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>query-products</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to query-products</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -999,7 +1013,7 @@ Content-Length: 393
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/accounts/10' -i -X GET \
     -H 'Accept: application/hal+json' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6MTAsImV4cCI6MTU4MjMxMjMyNiwiaWF0IjoxNTgyMjk0MzI2fQ.gbIuxxD2gDpCiyn5slXT1KgWcAZKIyrShX7Nf9geTzDAiHZruLVz7VXge12YaGWtM5-diGPwYoUzi-p5DDUJ5Q'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoxMCwiZXhwIjoxNTgyMzg1MjA0LCJpYXQiOjE1ODIzNjcyMDR9.87V-YtAh7Ctl0IKx7I_QHKB6E72J90iuHywsfJC97Cy1-JR_vfE82d2XaQHmHOnt9WzbscbQUQkkiuKh48i2Xg'</code></pre>
 </div>
 </div>
 </div>
@@ -1009,7 +1023,7 @@ Content-Length: 393
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/accounts/10 HTTP/1.1
 Accept: application/hal+json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6MTAsImV4cCI6MTU4MjMxMjMyNiwiaWF0IjoxNTgyMjk0MzI2fQ.gbIuxxD2gDpCiyn5slXT1KgWcAZKIyrShX7Nf9geTzDAiHZruLVz7VXge12YaGWtM5-diGPwYoUzi-p5DDUJ5Q
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoxMCwiZXhwIjoxNTgyMzg1MjA0LCJpYXQiOjE1ODIzNjcyMDR9.87V-YtAh7Ctl0IKx7I_QHKB6E72J90iuHywsfJC97Cy1-JR_vfE82d2XaQHmHOnt9WzbscbQUQkkiuKh48i2Xg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1051,15 +1065,15 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 525
+Content-Length: 632
 
 {
   "id" : 10,
-  "username" : "사용자",
+  "username" : "username",
   "balance" : 500000,
   "ordersSet" : [ ],
   "productSet" : [ ],
-  "createdAt" : "2020-02-21T23:12:06.18",
+  "createdAt" : "2020-02-22T19:26:44.008",
   "_links" : {
     "self" : {
       "href" : "http://localhost:8080/api/accounts/10"
@@ -1072,6 +1086,9 @@ Content-Length: 525
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-account-get"
     }
   }
 }</code></pre>
@@ -1178,6 +1195,10 @@ Content-Length: 525
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>query-products</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to query products</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1194,7 +1215,7 @@ Content-Length: 525
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/accounts' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "username" : "사용자",
+  "username" : "username",
   "password" : "password",
   "balance" : 50000000
 }'</code></pre>
@@ -1207,11 +1228,11 @@ Content-Length: 525
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/accounts HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 85
+Content-Length: 84
 Host: localhost:8080
 
 {
-  "username" : "사용자",
+  "username" : "username",
   "password" : "password",
   "balance" : 50000000
 }</code></pre>
@@ -1286,21 +1307,24 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 338
+Content-Length: 448
 
 {
   "id" : 11,
-  "username" : "사용자",
+  "username" : "username",
   "balance" : 50000000,
   "ordersSet" : null,
   "productSet" : null,
-  "createdAt" : "2020-02-21T23:12:06.245",
+  "createdAt" : "2020-02-22T19:26:44.074",
   "_links" : {
     "self" : {
       "href" : "http://localhost:8080/api/accounts/11"
     },
     "login" : {
       "href" : "http://localhost:8080/api/login"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-accounts-create"
     }
   }
 }</code></pre>
@@ -1403,6 +1427,10 @@ Content-Length: 338
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>login</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to login</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1418,9 +1446,9 @@ Content-Length: 338
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/accounts/1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6MSwiZXhwIjoxNTgyMzEyMzIyLCJpYXQiOjE1ODIyOTQzMjJ9.aAr6s3AZIzw1_OliNuYihvji_atCqrZez0gvZeOP9eSJ4Nb4AjVubTi-mzvvZstGA40aHrnMxO651Zcu18WKmg' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoxLCJleHAiOjE1ODIzODUxOTksImlhdCI6MTU4MjM2NzE5OX0.cwAKAGcrGX4cgPuzJiQ8h-OE6z5RSOeoMmLue8NznEPUdxQUIc3XX4cH7niq_ubkF5C1gBTZk9Qg0lnMxyzOlQ' \
     -d '{
-  "username" : "수정된 사용자",
+  "username" : "updatedUser",
   "password" : "password",
   "balance" : 500000
 }'</code></pre>
@@ -1433,12 +1461,12 @@ Content-Length: 338
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/accounts/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6MSwiZXhwIjoxNTgyMzEyMzIyLCJpYXQiOjE1ODIyOTQzMjJ9.aAr6s3AZIzw1_OliNuYihvji_atCqrZez0gvZeOP9eSJ4Nb4AjVubTi-mzvvZstGA40aHrnMxO651Zcu18WKmg
-Content-Length: 93
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoxLCJleHAiOjE1ODIzODUxOTksImlhdCI6MTU4MjM2NzE5OX0.cwAKAGcrGX4cgPuzJiQ8h-OE6z5RSOeoMmLue8NznEPUdxQUIc3XX4cH7niq_ubkF5C1gBTZk9Qg0lnMxyzOlQ
+Content-Length: 85
 Host: localhost:8080
 
 {
-  "username" : "수정된 사용자",
+  "username" : "updatedUser",
   "password" : "password",
   "balance" : 500000
 }</code></pre>
@@ -1516,15 +1544,15 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 443
+Content-Length: 546
 
 {
   "id" : 1,
-  "username" : "수정된 사용자",
+  "username" : "updatedUser",
   "balance" : 500000,
   "ordersSet" : [ ],
   "productSet" : [ ],
-  "createdAt" : "2020-02-21T23:12:02.399",
+  "createdAt" : "2020-02-22T19:26:38.973",
   "_links" : {
     "self" : {
       "href" : "http://localhost:8080/api/accounts/1"
@@ -1534,6 +1562,9 @@ Content-Length: 443
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-accounts-update"
     }
   }
 }</code></pre>
@@ -1636,6 +1667,10 @@ Content-Length: 443
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>query-products</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to query products</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1650,7 +1685,7 @@ Content-Length: 443
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/accounts/8' -i -X DELETE \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6OCwiZXhwIjoxNTgyMzEyMzI2LCJpYXQiOjE1ODIyOTQzMjZ9.JAGJDL7Sc5dAFJZrbDFbBhQxhFytryBIyBuqmVO78m7pXOwUZG7BnKFTnaEb1vBEqE2QnEGpFYoGF4TIdTG1RQ'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjo4LCJleHAiOjE1ODIzODUyMDMsImlhdCI6MTU4MjM2NzIwM30.YQ2WnX537jKvGeksIKtNuncH4_MMdjoLLn735vz22N0wMxKnQGwPnQqwvVUsZpFFVhybu921fNUJQTBKbN9WDw'</code></pre>
 </div>
 </div>
 </div>
@@ -1659,7 +1694,7 @@ Content-Length: 443
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/accounts/8 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLsgqzsmqnsnpAiLCJpZCI6OCwiZXhwIjoxNTgyMzEyMzI2LCJpYXQiOjE1ODIyOTQzMjZ9.JAGJDL7Sc5dAFJZrbDFbBhQxhFytryBIyBuqmVO78m7pXOwUZG7BnKFTnaEb1vBEqE2QnEGpFYoGF4TIdTG1RQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjo4LCJleHAiOjE1ODIzODUyMDMsImlhdCI6MTU4MjM2NzIwM30.YQ2WnX537jKvGeksIKtNuncH4_MMdjoLLn735vz22N0wMxKnQGwPnQqwvVUsZpFFVhybu921fNUJQTBKbN9WDw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1697,21 +1732,24 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 331
+Content-Length: 442
 
 {
   "id" : 8,
-  "username" : "사용자",
+  "username" : "username",
   "balance" : 500000,
   "ordersSet" : [ ],
   "productSet" : [ ],
-  "createdAt" : "2020-02-21T23:12:06.09",
+  "createdAt" : "2020-02-22T19:26:43.913",
   "_links" : {
     "self" : {
       "href" : "http://localhost:8080/api/accounts/8"
     },
     "login" : {
       "href" : "http://localhost:8080/api/login"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-accounts-delete"
     }
   }
 }</code></pre>
@@ -1810,6 +1848,10 @@ Content-Length: 331
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>login</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to login</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1856,35 +1898,23 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 6945
+Content-Length: 7086
 
 {
   "_embedded" : {
     "productResponseDtoList" : [ {
-      "id" : 27,
-      "name" : "스타트 스프링 부트",
+      "id" : 28,
+      "name" : "스타트 스프링 부트1",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.273",
+      "createdAt" : "2020-02-22T19:26:48.451",
       "account" : {
-        "id" : 41,
+        "id" : 43,
         "username" : "username",
         "balance" : null,
         "role" : "ROLE_USER",
-        "createdAt" : "2020-02-21T23:12:09.269"
+        "createdAt" : "2020-02-22T19:26:48.446"
       },
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/27"
-        }
-      }
-    }, {
-      "id" : 28,
-      "name" : "스타트 스프링 부트",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.276",
-      "account" : 41,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/28"
@@ -1892,11 +1922,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 29,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트2",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.282",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.453",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/29"
@@ -1904,11 +1934,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 30,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트3",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.284",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.455",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/30"
@@ -1916,11 +1946,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 31,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트4",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.285",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.456",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/31"
@@ -1928,11 +1958,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 32,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트5",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.288",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.458",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/32"
@@ -1940,11 +1970,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 33,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트6",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.29",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.464",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/33"
@@ -1952,11 +1982,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 34,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트7",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.292",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.467",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/34"
@@ -1964,11 +1994,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 35,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트8",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.294",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.471",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/35"
@@ -1976,11 +2006,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 36,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트9",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.295",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.474",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/36"
@@ -1988,11 +2018,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 37,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트10",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.297",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.475",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/37"
@@ -2000,11 +2030,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 38,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트11",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.298",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.477",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/38"
@@ -2012,11 +2042,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 39,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트12",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.3",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.479",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/39"
@@ -2024,11 +2054,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 40,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트13",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.302",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.481",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/40"
@@ -2036,11 +2066,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 41,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트14",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.303",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.483",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/41"
@@ -2048,11 +2078,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 42,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트15",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.305",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.487",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/42"
@@ -2060,11 +2090,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 43,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트16",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.307",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.489",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/43"
@@ -2072,11 +2102,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 44,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트17",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.309",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.492",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/44"
@@ -2084,11 +2114,11 @@ Content-Length: 6945
       }
     }, {
       "id" : 45,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트18",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.311",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.498",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/45"
@@ -2096,14 +2126,26 @@ Content-Length: 6945
       }
     }, {
       "id" : 46,
-      "name" : "스타트 스프링 부트",
+      "name" : "스타트 스프링 부트19",
       "price" : 15000,
       "amount" : 30,
-      "createdAt" : "2020-02-21T23:12:09.313",
-      "account" : 41,
+      "createdAt" : "2020-02-22T19:26:48.5",
+      "account" : 43,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/46"
+        }
+      }
+    }, {
+      "id" : 47,
+      "name" : "스타트 스프링 부트20",
+      "price" : 15000,
+      "amount" : 30,
+      "createdAt" : "2020-02-22T19:26:48.502",
+      "account" : 43,
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/api/products/47"
         }
       }
     } ]
@@ -2120,6 +2162,9 @@ Content-Length: 6945
     },
     "last" : {
       "href" : "http://localhost:8080/api/products?page=1&amp;size=20"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-products-list"
     }
   },
   "page" : {
@@ -2282,6 +2327,10 @@ Content-Length: 6945
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to last page</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2331,7 +2380,7 @@ Content-Length: 6945
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozOSwiZXhwIjoxNTgyMzEyMzI5LCJpYXQiOjE1ODIyOTQzMjl9.UM-sO_-pIMDbB301M71HDJRCTZnVI7vf2zY85lQyhllzeXZdyJWu53zr1TPGOc_R5iCTuYTflwbzn552dyAqEQ' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjo0MSwiZXhwIjoxNTgyMzg1MjA4LCJpYXQiOjE1ODIzNjcyMDh9.UFtA104lBFrL3FmYkWWsIUb2Yt4cMYw2Adi5U6iLtjhEdmVMGIcrFrfB3IpJdkMdoTBJMz5TwUAmBjSpE-brjw' \
     -d '{
   "name" : "스타트 스프링 부트",
   "price" : 15000,
@@ -2346,7 +2395,7 @@ Content-Length: 6945
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/products HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozOSwiZXhwIjoxNTgyMzEyMzI5LCJpYXQiOjE1ODIyOTQzMjl9.UM-sO_-pIMDbB301M71HDJRCTZnVI7vf2zY85lQyhllzeXZdyJWu53zr1TPGOc_R5iCTuYTflwbzn552dyAqEQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjo0MSwiZXhwIjoxNTgyMzg1MjA4LCJpYXQiOjE1ODIzNjcyMDh9.UFtA104lBFrL3FmYkWWsIUb2Yt4cMYw2Adi5U6iLtjhEdmVMGIcrFrfB3IpJdkMdoTBJMz5TwUAmBjSpE-brjw
 Content-Length: 83
 Host: localhost:8080
 
@@ -2388,7 +2437,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: http://localhost:8080/api/products/25
+Location: http://localhost:8080/api/products/26
 Content-Type: application/hal+json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2396,36 +2445,39 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 748
+Content-Length: 860
 
 {
-  "id" : 25,
+  "id" : 26,
   "name" : "스타트 스프링 부트",
   "price" : 15000,
   "amount" : 30,
-  "createdAt" : "2020-02-21T23:12:09.17",
+  "createdAt" : "2020-02-22T19:26:48.257",
   "account" : {
-    "id" : 39,
+    "id" : 41,
     "username" : "username",
     "balance" : null,
     "role" : "ROLE_USER",
-    "createdAt" : "2020-02-21T23:12:09.161"
+    "createdAt" : "2020-02-22T19:26:48.249"
   },
   "_links" : {
     "self" : {
-      "href" : "http://localhost:8080/api/products/25"
+      "href" : "http://localhost:8080/api/products/26"
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
     },
     "update-product" : {
-      "href" : "http://localhost:8080/api/products/25"
+      "href" : "http://localhost:8080/api/products/26"
     },
     "delete-product" : {
-      "href" : "http://localhost:8080/api/products/25"
+      "href" : "http://localhost:8080/api/products/26"
     },
     "order" : {
       "href" : "http://localhost:8080/api/orders"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-products-create"
     }
   }
 }</code></pre>
@@ -2556,6 +2608,10 @@ Content-Length: 748
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>order</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to order</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2569,9 +2625,9 @@ Content-Length: 748
 <h4 id="resources-products-update_curl_request"><a class="link" href="#resources-products-update_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products/16' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products/17' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoyNiwiZXhwIjoxNTgyMzEyMzI4LCJpYXQiOjE1ODIyOTQzMjh9.uydru0Dpj3RqvW7dJHcCkYPUDSvho_XUl6iALqLEtinqRNd464WK8D1Fg3B8jlG8d56Q3HaY5svNx5viM4LqEQ' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoyOCwiZXhwIjoxNTgyMzg1MjA3LCJpYXQiOjE1ODIzNjcyMDd9.aAabCAGJkkxIOy97EQg6wKv2EoHtaw1Cy5iyu0csJ5qAHOIHcZWL_zOw9sAEJRtPQxCHkz5lPb-17E-dPWaPyQ' \
     -d '{
   "name" : "모던 자바 인 액션",
   "price" : 15000,
@@ -2584,9 +2640,9 @@ Content-Length: 748
 <h4 id="resources-products-update_http_request"><a class="link" href="#resources-products-update_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/products/16 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/products/17 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoyNiwiZXhwIjoxNTgyMzEyMzI4LCJpYXQiOjE1ODIyOTQzMjh9.uydru0Dpj3RqvW7dJHcCkYPUDSvho_XUl6iALqLEtinqRNd464WK8D1Fg3B8jlG8d56Q3HaY5svNx5viM4LqEQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjoyOCwiZXhwIjoxNTgyMzg1MjA3LCJpYXQiOjE1ODIzNjcyMDd9.aAabCAGJkkxIOy97EQg6wKv2EoHtaw1Cy5iyu0csJ5qAHOIHcZWL_zOw9sAEJRtPQxCHkz5lPb-17E-dPWaPyQ
 Content-Length: 81
 Host: localhost:8080
 
@@ -2669,33 +2725,36 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 667
+Content-Length: 779
 
 {
-  "id" : 16,
+  "id" : 17,
   "name" : "모던 자바 인 액션",
   "price" : 15000,
   "amount" : 30,
-  "createdAt" : "2020-02-21T23:12:08.38",
+  "createdAt" : "2020-02-22T19:26:47.328",
   "account" : {
-    "id" : 26,
+    "id" : 28,
     "username" : "username",
     "balance" : null,
     "role" : "ROLE_USER",
-    "createdAt" : "2020-02-21T23:12:08.378"
+    "createdAt" : "2020-02-22T19:26:47.327"
   },
   "_links" : {
     "self" : {
-      "href" : "http://localhost:8080/api/products/16"
+      "href" : "http://localhost:8080/api/products/17"
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
     },
     "delete-product" : {
-      "href" : "http://localhost:8080/api/products/16"
+      "href" : "http://localhost:8080/api/products/17"
     },
     "create-product" : {
       "href" : "http://localhost:8080/api/products"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-products-update"
     }
   }
 }</code></pre>
@@ -2822,6 +2881,10 @@ Content-Length: 667
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>create-product</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to create product</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2835,8 +2898,8 @@ Content-Length: 667
 <h4 id="resources-products-delete_curl_request"><a class="link" href="#resources-products-delete_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products/21' -i -X DELETE \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozNCwiZXhwIjoxNTgyMzEyMzI4LCJpYXQiOjE1ODIyOTQzMjh9.OnJOcZlZv_5S26yKCbUOrY2dFuIg4SbH00sKBFiUENZz6wdigRdA9dhH7br20HjDdzjkmRUvAwhfUh1FC99Ziw'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products/22' -i -X DELETE \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozNiwiZXhwIjoxNTgyMzg1MjA3LCJpYXQiOjE1ODIzNjcyMDd9.6YPOIzEx5hVWb7169HSR94Sdra2C-fivRfE56O48hAO7A38qKFq-RrpgresR1bv_38RhZ0xlQctHI-L85udeNg'</code></pre>
 </div>
 </div>
 </div>
@@ -2844,8 +2907,8 @@ Content-Length: 667
 <h4 id="resources-products-delete_http_request"><a class="link" href="#resources-products-delete_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/products/21 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozNCwiZXhwIjoxNTgyMzEyMzI4LCJpYXQiOjE1ODIyOTQzMjh9.OnJOcZlZv_5S26yKCbUOrY2dFuIg4SbH00sKBFiUENZz6wdigRdA9dhH7br20HjDdzjkmRUvAwhfUh1FC99Ziw
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/products/22 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlkIjozNiwiZXhwIjoxNTgyMzg1MjA3LCJpYXQiOjE1ODIzNjcyMDd9.6YPOIzEx5hVWb7169HSR94Sdra2C-fivRfE56O48hAO7A38qKFq-RrpgresR1bv_38RhZ0xlQctHI-L85udeNg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2862,30 +2925,33 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 580
+Content-Length: 691
 
 {
-  "id" : 21,
+  "id" : 22,
   "name" : "스타트 스프링 부트",
   "price" : 15000,
   "amount" : 30,
-  "createdAt" : "2020-02-21T23:12:08.799",
+  "createdAt" : "2020-02-22T19:26:47.775",
   "account" : {
-    "id" : 34,
+    "id" : 36,
     "username" : "username",
     "balance" : null,
     "role" : "ROLE_USER",
-    "createdAt" : "2020-02-21T23:12:08.796"
+    "createdAt" : "2020-02-22T19:26:47.773"
   },
   "_links" : {
     "self" : {
-      "href" : "http://localhost:8080/api/products/21"
+      "href" : "http://localhost:8080/api/products/22"
     },
     "create-product" : {
       "href" : "http://localhost:8080/api/products"
     },
     "query-products" : {
       "href" : "http://localhost:8080/api/products"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-products-delete"
     }
   }
 }</code></pre>
@@ -3008,6 +3074,10 @@ Content-Length: 580
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>create-product</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to create product</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to profile</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -3031,132 +3101,132 @@ Content-Length: 580
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/orders' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLri6Trpbgg7IKs7Jqp7J6QIiwiaWQiOjIxLCJleHAiOjE1ODIzMTIzMjcsImlhdCI6MTU4MjI5NDMyN30.iX1dv2F3fzdGpG3KcpomwjqHA6tK6y8f-6rpiesyDYUf4ptNRXX5oNhDRxIS8GG9qczUOSlsyuof17ue5-kyEA' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLri6Trpbgg7IKs7Jqp7J6QIiwiaWQiOjIzLCJleHAiOjE1ODIzODUyMDYsImlhdCI6MTU4MjM2NzIwNn0.YArBWgJy9b7Fcc2YCjQ2HHGR9YoC5SWtJXm11W_tkhDKXN-S16WC2nUGQsBR6NasJhWX_jt_wWTF3FoS9cVTww' \
     -d '[ {
   "total" : 3000,
   "number" : 3,
   "product" : {
-    "id" : 5,
-    "name" : "열혈 자바 프로그래밍",
+    "id" : 6,
+    "name" : "열혈 자바 프로그래밍1",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.766",
+    "createdAt" : "2020-02-22T19:26:46.521",
     "ordersList" : null,
     "account" : {
-      "id" : 20,
+      "id" : 22,
       "username" : "사용자",
       "balance" : 1000,
       "role" : "ROLE_USER",
-      "createdAt" : "2020-02-21T23:12:07.761"
+      "createdAt" : "2020-02-22T19:26:46.516"
     }
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
-    "id" : 6,
-    "name" : "열혈 자바 프로그래밍",
-    "price" : 1000,
-    "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.77",
-    "ordersList" : null,
-    "account" : 20
-  }
-}, {
-  "total" : 3000,
-  "number" : 3,
-  "product" : {
     "id" : 7,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍2",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.773",
+    "createdAt" : "2020-02-22T19:26:46.526",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 8,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍3",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.775",
+    "createdAt" : "2020-02-22T19:26:46.527",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 9,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍4",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.778",
+    "createdAt" : "2020-02-22T19:26:46.529",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 10,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍5",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.78",
+    "createdAt" : "2020-02-22T19:26:46.531",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 11,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍6",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.781",
+    "createdAt" : "2020-02-22T19:26:46.533",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 12,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍7",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.784",
+    "createdAt" : "2020-02-22T19:26:46.534",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 13,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍8",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.786",
+    "createdAt" : "2020-02-22T19:26:46.536",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 14,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍9",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.788",
+    "createdAt" : "2020-02-22T19:26:46.539",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
+  }
+}, {
+  "total" : 3000,
+  "number" : 3,
+  "product" : {
+    "id" : 15,
+    "name" : "열혈 자바 프로그래밍10",
+    "price" : 1000,
+    "amount" : 10,
+    "createdAt" : "2020-02-22T19:26:46.544",
+    "ordersList" : null,
+    "account" : 22
   }
 } ]'</code></pre>
 </div>
@@ -3168,135 +3238,135 @@ Content-Length: 580
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/orders HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLri6Trpbgg7IKs7Jqp7J6QIiwiaWQiOjIxLCJleHAiOjE1ODIzMTIzMjcsImlhdCI6MTU4MjI5NDMyN30.iX1dv2F3fzdGpG3KcpomwjqHA6tK6y8f-6rpiesyDYUf4ptNRXX5oNhDRxIS8GG9qczUOSlsyuof17ue5-kyEA
-Content-Length: 2753
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLri6Trpbgg7IKs7Jqp7J6QIiwiaWQiOjIzLCJleHAiOjE1ODIzODUyMDYsImlhdCI6MTU4MjM2NzIwNn0.YArBWgJy9b7Fcc2YCjQ2HHGR9YoC5SWtJXm11W_tkhDKXN-S16WC2nUGQsBR6NasJhWX_jt_wWTF3FoS9cVTww
+Content-Length: 2767
 Host: localhost:8080
 
 [ {
   "total" : 3000,
   "number" : 3,
   "product" : {
-    "id" : 5,
-    "name" : "열혈 자바 프로그래밍",
+    "id" : 6,
+    "name" : "열혈 자바 프로그래밍1",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.766",
+    "createdAt" : "2020-02-22T19:26:46.521",
     "ordersList" : null,
     "account" : {
-      "id" : 20,
+      "id" : 22,
       "username" : "사용자",
       "balance" : 1000,
       "role" : "ROLE_USER",
-      "createdAt" : "2020-02-21T23:12:07.761"
+      "createdAt" : "2020-02-22T19:26:46.516"
     }
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
-    "id" : 6,
-    "name" : "열혈 자바 프로그래밍",
-    "price" : 1000,
-    "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.77",
-    "ordersList" : null,
-    "account" : 20
-  }
-}, {
-  "total" : 3000,
-  "number" : 3,
-  "product" : {
     "id" : 7,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍2",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.773",
+    "createdAt" : "2020-02-22T19:26:46.526",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 8,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍3",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.775",
+    "createdAt" : "2020-02-22T19:26:46.527",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 9,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍4",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.778",
+    "createdAt" : "2020-02-22T19:26:46.529",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 10,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍5",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.78",
+    "createdAt" : "2020-02-22T19:26:46.531",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 11,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍6",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.781",
+    "createdAt" : "2020-02-22T19:26:46.533",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 12,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍7",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.784",
+    "createdAt" : "2020-02-22T19:26:46.534",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 13,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍8",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.786",
+    "createdAt" : "2020-02-22T19:26:46.536",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
   }
 }, {
   "total" : 3000,
   "number" : 3,
   "product" : {
     "id" : 14,
-    "name" : "열혈 자바 프로그래밍",
+    "name" : "열혈 자바 프로그래밍9",
     "price" : 1000,
     "amount" : 10,
-    "createdAt" : "2020-02-21T23:12:07.788",
+    "createdAt" : "2020-02-22T19:26:46.539",
     "ordersList" : null,
-    "account" : 20
+    "account" : 22
+  }
+}, {
+  "total" : 3000,
+  "number" : 3,
+  "product" : {
+    "id" : 15,
+    "name" : "열혈 자바 프로그래밍10",
+    "price" : 1000,
+    "amount" : 10,
+    "createdAt" : "2020-02-22T19:26:46.544",
+    "ordersList" : null,
+    "account" : 22
   }
 } ]</code></pre>
 </div>
@@ -3428,7 +3498,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 7566
+Content-Length: 5979
 
 {
   "_embedded" : {
@@ -3436,275 +3506,229 @@ Content-Length: 7566
       "id" : 2,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.846",
+      "createdAt" : "2020-02-22T19:26:46.602",
       "product" : {
-        "id" : 5,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 6,
+        "name" : "열혈 자바 프로그래밍1",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.766",
+        "createdAt" : "2020-02-22T19:26:46.521",
         "ordersList" : null,
         "account" : {
-          "id" : 20,
+          "id" : 22,
           "username" : "사용자",
           "balance" : 1000,
           "role" : "ROLE_USER",
-          "createdAt" : "2020-02-21T23:12:07.761"
+          "createdAt" : "2020-02-22T19:26:46.516"
         }
       },
       "account" : {
-        "id" : 21,
+        "id" : 23,
         "username" : "다른 사용자",
         "balance" : 500000000000,
         "role" : "ROLE_USER",
-        "createdAt" : "2020-02-21T23:12:07.761"
+        "createdAt" : "2020-02-22T19:26:46.516"
       },
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/2"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 3,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.846",
+      "createdAt" : "2020-02-22T19:26:46.603",
       "product" : {
-        "id" : 6,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 7,
+        "name" : "열혈 자바 프로그래밍2",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.77",
+        "createdAt" : "2020-02-22T19:26:46.526",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/3"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 4,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.846",
+      "createdAt" : "2020-02-22T19:26:46.603",
       "product" : {
-        "id" : 7,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 8,
+        "name" : "열혈 자바 프로그래밍3",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.773",
+        "createdAt" : "2020-02-22T19:26:46.527",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/4"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 5,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.846",
+      "createdAt" : "2020-02-22T19:26:46.603",
       "product" : {
-        "id" : 8,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 9,
+        "name" : "열혈 자바 프로그래밍4",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.775",
+        "createdAt" : "2020-02-22T19:26:46.529",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/5"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 6,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.847",
+      "createdAt" : "2020-02-22T19:26:46.603",
       "product" : {
-        "id" : 9,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 10,
+        "name" : "열혈 자바 프로그래밍5",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.778",
+        "createdAt" : "2020-02-22T19:26:46.531",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/6"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 7,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.848",
+      "createdAt" : "2020-02-22T19:26:46.604",
       "product" : {
-        "id" : 10,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 11,
+        "name" : "열혈 자바 프로그래밍6",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.78",
+        "createdAt" : "2020-02-22T19:26:46.533",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/7"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 8,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.848",
+      "createdAt" : "2020-02-22T19:26:46.604",
       "product" : {
-        "id" : 11,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 12,
+        "name" : "열혈 자바 프로그래밍7",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.781",
+        "createdAt" : "2020-02-22T19:26:46.534",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/8"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 9,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.848",
+      "createdAt" : "2020-02-22T19:26:46.604",
       "product" : {
-        "id" : 12,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 13,
+        "name" : "열혈 자바 프로그래밍8",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.784",
+        "createdAt" : "2020-02-22T19:26:46.536",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/9"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 10,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.848",
+      "createdAt" : "2020-02-22T19:26:46.605",
       "product" : {
-        "id" : 13,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 14,
+        "name" : "열혈 자바 프로그래밍9",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.786",
+        "createdAt" : "2020-02-22T19:26:46.539",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/10"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     }, {
       "id" : 11,
       "total" : 3000,
       "number" : 3,
-      "createdAt" : "2020-02-21T23:12:07.848",
+      "createdAt" : "2020-02-22T19:26:46.605",
       "product" : {
-        "id" : 14,
-        "name" : "열혈 자바 프로그래밍",
+        "id" : 15,
+        "name" : "열혈 자바 프로그래밍10",
         "price" : 1000,
         "amount" : 10,
-        "createdAt" : "2020-02-21T23:12:07.788",
+        "createdAt" : "2020-02-22T19:26:46.544",
         "ordersList" : null,
-        "account" : 20
+        "account" : 22
       },
-      "account" : 21,
+      "account" : 23,
       "_links" : {
         "self" : {
           "href" : "http://localhost:8080/api/products/11"
-        },
-        "create-product" : {
-          "href" : "http://localhost:8080/api/products"
-        },
-        "query-products" : {
-          "href" : "http://localhost:8080/api/products"
         }
       }
     } ]
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080/api/orders"
+    },
+    "profile" : {
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-orders-create"
+    },
+    "create-product" : {
+      "href" : "http://localhost:8080/api/products"
+    },
+    "query-products" : {
+      "href" : "http://localhost:8080/api/products"
+    }
   }
 }</code></pre>
 </div>

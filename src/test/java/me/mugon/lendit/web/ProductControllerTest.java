@@ -80,13 +80,15 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.update-product").exists())
                 .andExpect(jsonPath("_links.delete-product").exists())
                 .andExpect(jsonPath("_links.order").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("create-product",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-products").description("link to query products"),
                                 linkWithRel("update-product").description("link to update product"),
                                 linkWithRel("delete-product").description("link to delete product"),
-                                linkWithRel("order").description("link to order")
+                                linkWithRel("order").description("link to order"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
@@ -206,12 +208,14 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.delete-product").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
                 .andExpect(jsonPath("_links.create-product").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("update-product",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-products").description("link to query products"),
                                 linkWithRel("delete-product").description("link to delete product"),
-                                linkWithRel("create-product").description("link to create product")
+                                linkWithRel("create-product").description("link to create product"),
+                                linkWithRel("profile").description("link to profile")
                         ), requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization Header")
@@ -360,11 +364,13 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.create-product").exists())
                 .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("delete-product",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-products").description("link to query products"),
-                                linkWithRel("create-product").description("link to create product")
+                                linkWithRel("create-product").description("link to create product"),
+                                linkWithRel("profile").description("link to profile")
                         ), responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ), responseFields(
@@ -424,7 +430,7 @@ class ProductControllerTest extends BaseControllerTest {
         long price = 15000L;
         long amount = 30L;
         Account account = createAccount();
-        IntStream.rangeClosed(1, 30).forEach(e -> saveProduct(price, amount, account));
+        IntStream.rangeClosed(1, 30).forEach(e -> saveProduct_need_index(e, price, amount, account));
 
         List<Product> all = productRepository.findAll();
         assertEquals(all.size(), 30);
@@ -447,12 +453,14 @@ class ProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.next").exists())
                 .andExpect(jsonPath("_links.last").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("query-products",
                         links(
                                 linkWithRel("first").description("link to first page"),
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("next").description("link to next page"),
-                                linkWithRel("last").description("link to last page")
+                                linkWithRel("last").description("link to last page"),
+                                linkWithRel("profile").description("link to profile")
                         ), responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ), responseFields(
@@ -480,6 +488,16 @@ class ProductControllerTest extends BaseControllerTest {
     private Product saveProduct(long price, long amount, Account account) {
         return productRepository.save(Product.builder()
                 .name("스타트 스프링 부트")
+                .price(price)
+                .amount(amount)
+                .createdAt(LocalDateTime.now())
+                .account(account)
+                .build());
+    }
+
+    private Product saveProduct_need_index(int index, long price, long amount, Account account) {
+        return productRepository.save(Product.builder()
+                .name("스타트 스프링 부트" + index)
                 .price(price)
                 .amount(amount)
                 .createdAt(LocalDateTime.now())

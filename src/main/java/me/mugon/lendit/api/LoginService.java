@@ -7,6 +7,7 @@ import me.mugon.lendit.domain.login.LoginResource;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.JwtResponseDto;
 import me.mugon.lendit.web.dto.LoginDto;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +37,7 @@ public class LoginService {
         JwtResponseDto jwtResponseDto = new JwtResponseDto(jwt);
         LoginResource loginResource = new LoginResource(jwtResponseDto);
         loginResource.add(linkTo(ProductController.class).withRel("query-products"));
+        loginResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-login-request").withRel("profile"));
         return new ResponseEntity<>(loginResource, HttpStatus.OK);
     }
 

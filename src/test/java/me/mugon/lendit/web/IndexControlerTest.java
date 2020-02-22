@@ -19,9 +19,11 @@ public class IndexControlerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_links.login").exists())
+                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("index",
                         links(
-                                linkWithRel("login").description("link to login")
+                                linkWithRel("login").description("link to login"),
+                                linkWithRel("profile").description("link to profile")
                         )
                 ));
     }

@@ -2,7 +2,7 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.config.jwt.JwtProvider;
-import me.mugon.lendit.domain.BaseValidator;
+import me.mugon.lendit.domain.common.BaseValidator;
 import me.mugon.lendit.domain.login.LoginResource;
 import me.mugon.lendit.web.ProductController;
 import me.mugon.lendit.web.dto.JwtResponseDto;

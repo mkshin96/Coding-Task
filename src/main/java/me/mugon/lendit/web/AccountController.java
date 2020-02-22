@@ -2,7 +2,7 @@ package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.api.AccountService;
-import me.mugon.lendit.domain.BaseValidator;
+import me.mugon.lendit.domain.common.BaseValidator;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.CurrentUser;
 import me.mugon.lendit.web.dto.account.AccountRequestDto;

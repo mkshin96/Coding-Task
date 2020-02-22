@@ -1,6 +1,6 @@
 package me.mugon.lendit.domain.order;
 
-import me.mugon.lendit.domain.BaseValidator;
+import me.mugon.lendit.domain.common.BaseValidator;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;

@@ -2,7 +2,7 @@ package me.mugon.lendit.web;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.api.LoginService;
-import me.mugon.lendit.domain.BaseValidator;
+import me.mugon.lendit.domain.common.BaseValidator;
 import me.mugon.lendit.web.dto.LoginDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

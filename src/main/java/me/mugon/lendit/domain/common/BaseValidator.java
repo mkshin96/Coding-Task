@@ -1,4 +1,4 @@
-package me.mugon.lendit.domain;
+package me.mugon.lendit.domain.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

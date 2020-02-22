@@ -185,4 +185,4 @@ operation::delete-product[snippets='curl-request,http-request,http-response,resp
 
 `POST` 요청을 사용해서 새 주문을 등록할 수 있다.
 
-operation::create-orders[snippets='curl-request,http-request,request-headers,request-fields,http-response,response-headers,response-fields']
+operation::create-orders[snippets='curl-request,http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']

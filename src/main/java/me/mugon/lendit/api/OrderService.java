@@ -1,11 +1,11 @@
 package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
-import me.mugon.lendit.domain.order.OrdersValidator;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.order.OrdersResource;
+import me.mugon.lendit.domain.order.OrdersValidator;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.web.OrdersController;
 import me.mugon.lendit.web.ProductController;
@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.*;
@@ -37,53 +39,55 @@ public class OrderService {
     private final OrdersValidator ordersValidator;
 
     @Transactional
-    public ResponseEntity<?> order(OrdersRequestDto[] requestDto, Account currentUser) {
+    public ResponseEntity<?> order(List<OrdersRequestDto> ordersRequestDtos, Account currentUser) {
         List<Orders> ordersList = new LinkedList<>();
-        for (OrdersRequestDto order : requestDto) {
-            if (order.getProduct().getAmount() == 0) {
-                order.getProduct().amountIsZero();
-            }
-            if (order.getProduct().isCheckAmount()) {
-                return new ResponseEntity<>(ordersValidator.returnErrorMessage(SHORTAGEOFGOODS), HttpStatus.BAD_REQUEST);
-            }
-            Long id = order.getProduct().getId();
-            Optional<Product> optionalProduct = productService.findById(id);
+
+        for (OrdersRequestDto ordersRequestDto : ordersRequestDtos) {
+            Long productId = ordersRequestDto.getProductId();
+            Optional<Product> optionalProduct = productService.findById(productId);
             if (!optionalProduct.isPresent()) {
-                return new ResponseEntity<>(ordersValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(PRODUCTNOTFOUND, HttpStatus.BAD_REQUEST);
             }
-            Product product = optionalProduct.get();
-            if (ordersValidator.verifyAmount(order, order.getProduct())) {
+
+            Product savedProduct = optionalProduct.get();
+            if (savedProduct.amountEqualsZero()) {
+                savedProduct.changeCheckAmount();
+            }
+            if (savedProduct.isCheckAmount() || ordersRequestDto.verifyAmount(savedProduct)) {
                 return new ResponseEntity<>(ordersValidator.returnErrorMessage(SHORTAGEOFGOODS), HttpStatus.BAD_REQUEST);
             }
+
             Optional<Account> optionalAccount = accountService.findById(currentUser.getId());
             if (!optionalAccount.isPresent()) {
                 return new ResponseEntity<>(ordersValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
             }
-            Account account = optionalAccount.get();
-            if (ordersValidator.verifyBalance(order, currentUser)) {
+            Account savedAccount = optionalAccount.get();
+
+            if (ordersRequestDto.verifyBalance(savedAccount)) { //예치
                 return new ResponseEntity<>(ordersValidator.returnErrorMessage(OVERTHELIMIT), HttpStatus.BAD_REQUEST);
             }
-            if (currentUser.getId().equals(order.getProduct().getAccount().getId())) {
+            if (ordersValidator.isValidUser(savedAccount, savedProduct)) {
                 return new ResponseEntity<>(ordersValidator.returnErrorMessage(REGISTEREDBYONESELF), HttpStatus.BAD_REQUEST);
             }
-            account.reduceBalance(order.getTotal());
-            product.reduceAmount(order.getNumber());
-            if (product.getAmount() == 0) {
-                product.amountIsZero();
+            savedAccount.reduceBalance(ordersRequestDto.getTotal());
+            savedProduct.reduceAmount(ordersRequestDto.getNumber());
+
+            if (savedProduct.amountEqualsZero()) {
+                savedProduct.changeCheckAmount();
             }
-            Orders orders = order.toEntity(currentUser);
+            Orders orders = ordersRequestDto.toEntity(currentUser, savedProduct);
             ordersList.add(orders);
         }
-        List<Orders> savedOrdersList = ordersRepository.saveAll(ordersList);
 
-        List<EntityModel<OrdersResponseDto>> collect = savedOrdersList.stream()
+        List<Orders> savedOrdersList = ordersRepository.saveAll(ordersList);
+        List<EntityModel<OrdersResponseDto>> modelList = savedOrdersList.stream()
                 .map(e -> {
                     EntityModel<OrdersResponseDto> entityModel = new EntityModel<>(new OrdersResponseDto(e));
                     entityModel.add(linkTo(ProductController.class).slash(e.getId()).withSelfRel());
                     return entityModel;
                 }).collect(Collectors.toList());
 
-        OrdersResource entityModels = new OrdersResource(collect);
+        OrdersResource entityModels = new OrdersResource(modelList);
         entityModels.add(linkTo(OrdersController.class).withSelfRel());
         entityModels.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-orders-create").withRel("profile"));
         entityModels.add(linkTo(ProductController.class).withRel("create-product"));

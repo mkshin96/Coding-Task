@@ -55,7 +55,7 @@
 
 * `Spring Security`
 
-* `JSON Web Token Support For The JVM`
+* `JSON Web Token for Java(jjwt)`
 
 * `JUnit Jupiter API`
 
@@ -65,5 +65,9 @@
 
 </details>
 
+## API Guide
+<details><summary>세부정보</summary>
 
+* [Link](https://mkshin96.github.io/Coding-Task/)
 
+</details>

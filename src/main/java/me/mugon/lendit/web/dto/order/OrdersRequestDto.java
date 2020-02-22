@@ -1,9 +1,6 @@
 package me.mugon.lendit.web.dto.order;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.domain.product.Product;
@@ -11,28 +8,18 @@ import me.mugon.lendit.domain.product.Product;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class OrdersRequestDto {
 
-    @NotNull
+    @NotNull(message = "please enter total price")
     private Long total;
 
-    @NotNull
+    @NotNull(message = "please enter product number")
     private Long number;
 
-    @NotNull
-    private Product product;
-
-    public Orders toEntity(Account currentUser) {
-        return Orders.builder()
-                .total(total)
-                .number(number)
-                .account(currentUser)
-                .product(product)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
+    @NotNull(message = "please enter product identifier")
+    private Long productId;
 
     public boolean verifyBalance(Account currentUser) {
         return currentUser.getBalance() < total;
@@ -40,5 +27,15 @@ public class OrdersRequestDto {
 
     public boolean verifyAmount(Product product) {
         return product.getAmount() < number;
+    }
+
+    public Orders toEntity(Account currentUser, Product savedProduct) {
+        return Orders.builder()
+                .total(total)
+                .number(number)
+                .account(currentUser)
+                .product(savedProduct)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }

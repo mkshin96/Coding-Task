@@ -9,9 +9,7 @@ import me.mugon.lendit.domain.order.OrdersRepository;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,9 +45,9 @@ class OrdersControllerTest extends BaseControllerTest {
     private OrdersRepository ordersRepository;
 
     private final String ordersUrl = "/api/orders";
-    private final String username = "사용자";
+    private final String username = "username";
     private final String password = "password";
-    private final String anotherUsername = "다른 사용자";
+    private final String anotherUsername = "another username";
 
     @AfterEach
     void clean() {
@@ -64,18 +62,18 @@ class OrdersControllerTest extends BaseControllerTest {
         Account account = generateAccount(username, password, 1000L);
         Account anotherAccount = generateAccount(anotherUsername, password, 500000000000L);
 
-        Account saveAccount = saveAccount(account);
-        Account saveAnotherAccount = saveAccount(anotherAccount);
+        Account savedAccount = saveAccount(account);
+        Account savedAnotherAccount = saveAccount(anotherAccount);
 
         List<OrdersRequestDto> list = new LinkedList<>();
         OrdersRequestDto[] arrays = new OrdersRequestDto[10];
         IntStream.rangeClosed(1, 10).forEach(i -> {
-            Product product = generateProduct_need_index(i,1000L, 10L, saveAccount);
+            Product product = generateProduct_need_index(i,1000L, 10L, savedAccount);
             Product saveProduct = saveProduct(product);
             OrdersRequestDto dto = OrdersRequestDto.builder()
                     .number(3L)
                     .total(3000L)
-                    .product(saveProduct)
+                    .productId(saveProduct.getId())
                     .build();
             list.add(dto);
             arrays[i-1] = dto;
@@ -84,9 +82,9 @@ class OrdersControllerTest extends BaseControllerTest {
         assertEquals(list.size(), 10);
 
         mockMvc.perform(post(ordersUrl)
-                .header(HttpHeaders.AUTHORIZATION, generateJwt(saveAnotherAccount))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAnotherAccount))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(arrays)))
+                .content(objectMapper.writeValueAsString(list)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].id").exists())
@@ -110,18 +108,7 @@ class OrdersControllerTest extends BaseControllerTest {
                         ), requestFields(
                                 fieldWithPath("[*].total").description("총 금액"),
                                 fieldWithPath("[*].number").description("사고자 하는 상품의 개수"),
-                                fieldWithPath("[*].product.id").description("상품 식별자"),
-                                fieldWithPath("[*].product.name").description("상품 이름"),
-                                fieldWithPath("[*].product.price").description("상품 가격"),
-                                fieldWithPath("[*].product.amount").description("상품 재고 수량"),
-                                fieldWithPath("[*].product.createdAt").description("상품 등록 일시"),
-                                fieldWithPath("[*].product.ordersList").description("상품 주문 리스트"),
-                                fieldWithPath("[*].product.account.id").description("상품 등록자 식별자"),
-                                fieldWithPath("[*].product.account.username").description("상품 등록자 이름"),
-                                fieldWithPath("[*].product.account.balance").description("상품 등록자 예치금"),
-                                fieldWithPath("[*].product.account.role").description("상품 등록자 역할"),
-                                fieldWithPath("[*].product.account.createdAt").description("상품 등록자 생성 일시"),
-                                fieldWithPath("[*].product.account").description("상품 등록자 식별자")
+                                fieldWithPath("[*].productId").description("상품 식별자")
                         ), responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
                         ),
@@ -174,7 +161,7 @@ class OrdersControllerTest extends BaseControllerTest {
         OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
                 .number(number)
                 .total(number * price)
-                .product(savedProduct)
+                .productId(savedProduct.getId())
                 .build();
 
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
@@ -205,15 +192,15 @@ class OrdersControllerTest extends BaseControllerTest {
         OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
                 .number(number)
                 .total(number * price)
-                .product(savedProduct)
+                .productId(savedProduct.getId())
                 .build();
 
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                        .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(savedAccount))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(KEY).exists());
@@ -242,7 +229,7 @@ class OrdersControllerTest extends BaseControllerTest {
         OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
                 .number(number)
                 .total(number * price)
-                .product(savedProduct)
+                .productId(savedProduct.getId())
                 .build();
 
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
@@ -278,15 +265,15 @@ class OrdersControllerTest extends BaseControllerTest {
         OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
                 .number(number)
                 .total(number * price)
-                .product(savedProduct)
+                .productId(savedProduct.getId())
                 .build();
 
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
 
         mockMvc.perform(post(ordersUrl)
-                    .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(ordersRequestDtos)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("_embedded.ordersResponseDtoList[*].id").exists())
@@ -305,11 +292,11 @@ class OrdersControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("상품재고가 처음부터 0개 일 때 구매가 불가능한지 테스트")
-    void 상품재고가_처음부터_0일때() {
+    void 상품재고가_처음부터_0일때() throws Exception {
         long balance = 300000L;
         long price = 10000L;
         long number = 30L;
-        long amount = 30L;
+        long amount = 0;
 
         Account account = generateAccount(username, password, balance);
         Account anotherAccount = generateAccount(anotherUsername, password, balance);
@@ -322,10 +309,60 @@ class OrdersControllerTest extends BaseControllerTest {
         OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
                 .number(number)
                 .total(number * price)
-                .product(savedProduct)
+                .productId(savedProduct.getId())
                 .build();
 
         List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
+
+        mockMvc.perform(post(ordersUrl)
+                .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(KEY).exists());
+    }
+    
+    @RepeatedTest(value = 3, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
+    @DisplayName("상품의 개수(number), 총 가격(total), 상품(product) 중 하나라도 null이 들어올 경우 Bad Request반환")
+    void 주문_등록_시_null_테스트(RepetitionInfo info) throws Exception {
+        long balance = 300000L;
+        long price = 10000L;
+        long number = 30L;
+        long amount = 0;
+
+        Account account = generateAccount(username, password, balance);
+        Account anotherAccount = generateAccount(anotherUsername, password, balance);
+        Account savedAccount = saveAccount(account);
+        Account anotherSavedAccount = saveAccount(anotherAccount);
+
+        Product product = generateProduct(price, amount, savedAccount);
+        Product savedProduct = saveProduct(product);
+
+        OrdersRequestDto ordersRequestDto = OrdersRequestDto.builder()
+                .number(number)
+                .total(number * price)
+                .productId(savedProduct.getId())
+                .build();
+
+        int currentRepetition = info.getCurrentRepetition();
+        if (currentRepetition == 1) {
+            ordersRequestDto.setNumber(null);
+        } else if (currentRepetition == 2) {
+            ordersRequestDto.setTotal(null);
+        } else if (currentRepetition == 3) {
+            ordersRequestDto.setProductId(null);
+        }
+
+        List<OrdersRequestDto> ordersRequestDtos = Arrays.asList(ordersRequestDto);
+
+        mockMvc.perform(post(ordersUrl)
+                    .header(HttpHeaders.AUTHORIZATION, generateJwt(anotherSavedAccount))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(ordersRequestDtos)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(KEY).exists());
     }
 
     private Product saveProduct(Product product) {

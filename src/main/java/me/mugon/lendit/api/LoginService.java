@@ -29,6 +29,15 @@ public class LoginService {
 
     private final BaseValidator baseValidator;
 
+    /**
+     * 로그인
+     * 1. 클라이언트에게 전달받은 Dto의 username과 password를 인증을 담당하는 AuthenticationManage로 넘김
+     * 2. 검증에 실패하면 Body에 'message: 아이디 또는 비밀번호가 맞지 않습니다.'를 담아 Bad Request와 함께 반환
+     * 3. 검증에 성공하면 jwt토큰 발급
+     * 4. HATEOAS를 위해 query-products, self 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Header의 Location옵션에 생성된 유저를 조회할 수 있는 링크를 담고, Body에 위의 EntityModel을 실어 반환
+     */
     public ResponseEntity<?> login(LoginDto loginDto) {
         if (authenticate(loginDto.getUsername(), loginDto.getPassword())) {
             return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDIDORPASSWORD), HttpStatus.BAD_REQUEST);

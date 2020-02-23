@@ -12,6 +12,7 @@ import javax.validation.Validation;
 import java.util.Collection;
 
 /**
+ * Collection 을 @Valid 로 유효성 검증을 하기 위해 Validator를 implement 받아 구현함
  * Reference
  * https://gompangs.tistory.com/entry/Spring-Valid-Collection-Validation-%EA%B4%80%EB%A0%A8
  */

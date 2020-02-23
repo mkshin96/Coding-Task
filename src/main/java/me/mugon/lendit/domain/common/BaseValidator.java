@@ -9,6 +9,10 @@ import java.util.*;
 
 import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 
+/**
+ * 프론트엔드와의 협업 시 유효성에 문제가 있을 경우 같은 형식으로 반환하기 위해 다음과 같이 구현
+ * 모든 Controller, Service 클래스에서 사용되기 때문에 코드 중복을 피하기 위해 하나의 클래스에 구현 후 사용함
+ */
 @Component
 public class BaseValidator {
 

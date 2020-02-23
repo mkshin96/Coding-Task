@@ -63,6 +63,10 @@
 
 * `Lombok`
 
+* `Spring HATEOAS`
+
+* `Spring RESTDocs`
+
 </details>
 
 ## API Guide

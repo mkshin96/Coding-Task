@@ -34,6 +34,15 @@ public class AccountService implements UserDetailsService {
 
     private final BaseValidator baseValidator;
 
+    /**
+     * 유저 생성
+     * 1. 클라이언트에게 전달받은 Dto의 username으로 db를 검색
+     * 2. db에 있다면 Body에 'message: 중복된유저입니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 없다면 저장
+     * 4. HATEOAS를 위해 login, self 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Header의 Location옵션에 생성된 유저를 조회할 수 있는 링크를 담고, Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> saveAccount(AccountRequestDto requestDto) {
         Optional<Account> findByUsername = accountRepository.findByUsername(requestDto.getUsername());
@@ -49,6 +58,15 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.created(selfLinkBuilder.toUri()).body(accountResource);
     }
 
+    /**
+     * 유저 수정
+     * 1. url경로로 전달받은 유저의 id로 db를 검색
+     * 2. db에 없다면 Body에 'message: 사용자를 찾을 수 없습니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 있다면 전달받은 dto의 값으로 데이터 변경
+     * 4. HATEOAS를 위해 delete-acoount, self, query-products 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> updateAccount(Long accountId, AccountRequestDto requestDto) {
         Optional<Account> optionalAccount = findById(accountId);
@@ -65,6 +83,15 @@ public class AccountService implements UserDetailsService {
         return new ResponseEntity<>(accountResource, HttpStatus.OK);
     }
 
+    /**
+     * 유저 삭제
+     * 1. url경로로 전달받은 유저의 id로 db를 검색
+     * 2. db에 없다면 Body에 'message: 사용자를 찾을 수 없습니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 있다면 삭제
+     * 4. HATEOAS를 위해 login, self 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> deleteAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);
@@ -78,6 +105,15 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.ok().body(accountResource);
     }
 
+    /**
+     * 개별 유저 조회
+     * 1. url경로로 전달받은 유저의 id로 db를 검색
+     * 2. db에 없다면 Body에 'message: 사용자를 찾을 수 없습니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 있다면 responseDto에 데이터를 매핑해줌
+     * 4. HATEOAS를 위해 update-account, delete-account, self, query-products 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);

@@ -38,6 +38,25 @@ public class OrderService {
 
     private final OrdersValidator ordersValidator;
 
+    /**
+     * 1. 입력받은 List를 순회
+     * 2. 입력받은 주문의 상품 id로 db를 검색
+     * 3. 저장되어 있지 않은 상품인 경우 Body에 'message: 상품을 찾을 수 없습니다.'를 실어 Bad Request와 함께 반환
+     * 4. 저장되어 있는 상품인 경우 상품 재고가 0개인지 검사
+     * 5. 0개인 경우 필드의 checkAmount 데이터를 true로 변경
+     * 6. checkAmount 필드가 true인지, 주문한 상품의 개수가 재고 수량보다 많은지 검사, 그럴 경우 Body에 'message: 재고가 부족합니다.'를 실어 Bad Request와 함께 반환
+     * 7. 현재 로그인한 유저의 id를 통해 db에서 검색
+     * 8. db에 등록되어 있지 않은 경우 Body에 'message: 사용자를 찾을 수 없습니다.'를 실어 Bad Request와 함께 반환
+     * 9. 유저의 예치금이 상품의 총 가격보다 많은지 검사, 아닐 경우 Body에 'message: 예치금이 부족합니다.'를 실어 Bad Request와 함께 반환
+     * 10. 유저가 상품을 등록한 유저인지 검사, 그럴 경우 Body에 'message: 자신이 등록한 상품은 주문할 수 없습니다.'를 실어 Bad Request와 함께 반환
+     * 11. 유저의 예치금을 총 가격만큼 감소시킴
+     * 12. 상품의 재고 수량을 주문 개수만큼 감소시킴
+     * 13. 만약 상품의 재고 수량이 0개인 경우 checkAmount 필드를 true로 변경
+     * 14. Orders db에 저장
+     * 14. HATEOAS를 위해 create-product, self, query-product 관계를 EntityModel에 더함
+     * 15. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 16. 반환
+     */
     @Transactional
     public ResponseEntity<?> order(List<OrdersRequestDto> ordersRequestDtos, Account currentUser) {
         List<Orders> ordersList = new LinkedList<>();
@@ -46,7 +65,7 @@ public class OrderService {
             Long productId = ordersRequestDto.getProductId();
             Optional<Product> optionalProduct = productService.findById(productId);
             if (!optionalProduct.isPresent()) {
-                return new ResponseEntity<>(PRODUCTNOTFOUND, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(ordersValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
             }
 
             Product savedProduct = optionalProduct.get();
@@ -63,7 +82,7 @@ public class OrderService {
             }
             Account savedAccount = optionalAccount.get();
 
-            if (ordersRequestDto.verifyBalance(savedAccount)) { //예치
+            if (ordersRequestDto.verifyBalance(savedAccount)) {
                 return new ResponseEntity<>(ordersValidator.returnErrorMessage(OVERTHELIMIT), HttpStatus.BAD_REQUEST);
             }
             if (ordersValidator.isValidUser(savedAccount, savedProduct)) {

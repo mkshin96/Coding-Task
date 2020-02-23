@@ -31,6 +31,15 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    /**
+     * 상품 생성
+     * 1. 클라이언트에게 전달받은 Dto를 Entity Class로 매핑
+     * 2. 상품을 등록한 유저와 Entity Class를 매핑
+     * 3. db에 저장
+     * 4. HATEOAS를 위해 query-products, self, update-product, delete-product, order 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Header의 Location옵션에 생성된 상품을 조회할 수 있는 링크를 담고, Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> registrationProduct(ProductRequestDto productRequestDto, Account currentUser) {
         Product product = productRequestDto.toEntity(currentUser);
@@ -47,6 +56,15 @@ public class ProductService {
         return ResponseEntity.created(selfLinkBuilder.toUri()).body(productResource);
     }
 
+    /**
+     * 상품 수정
+     * 1. url경로로 전달받은 상품의 id로 db를 검색
+     * 2. db에 없다면 Body에 'message: 상품을 찾을 수 없습니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 있다면 전달받은 dto의 값으로 데이터 변경
+     * 4. HATEOAS를 위해 delete-product, self, query-products, create-product 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
@@ -67,6 +85,15 @@ public class ProductService {
         return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
+    /**
+     * 상품 삭제
+     * 1. url경로로 전달받은 상품의 id로 db를 검색
+     * 2. db에 없다면 Body에 'message: 상품을 찾을 수 없습니다.' 를 실어서 Bad Request와 함께 반환
+     * 3. db에 있다면 삭제
+     * 4. HATEOAS를 위해 create-product, self, query-products 관계를 EntityModel에 더함
+     * 5. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 6. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional
     public ResponseEntity<?> deleteProduct(Long productId, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
@@ -85,6 +112,13 @@ public class ProductService {
         return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
+    /**
+     * 상품 리스트 조회
+     * 1. db의 모든 상품을 Paging을 거쳐 조회
+     * 2. HATEOAS를 위해 self 관계를 EntityModel에 더함
+     * 3. Self Descriptive Message를 위해 API Guide의 주소를 profile 관계로 명시하여 더함
+     * 4. Body에 위의 EntityModel을 실어 반환
+     */
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProductList(Pageable pageable, PagedResourcesAssembler<Product> assembler) {
         Page<Product> all = productRepository.findAll(pageable);

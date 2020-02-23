@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @AuthenticationPrincipal의 메타 어노테이션인 @CurrentUser을 사용하여 Account 값을 주입받기 위해 선언
+ */
 @Getter
 public class AccountAdapter extends User {
 

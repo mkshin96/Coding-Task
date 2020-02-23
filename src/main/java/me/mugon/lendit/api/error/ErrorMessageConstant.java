@@ -1,5 +1,8 @@
 package me.mugon.lendit.api.error;
 
+/**
+ * 에러 메시지의 type safety를 위해 생성
+ */
 public class ErrorMessageConstant {
     public static String KEY = "message";
     public static String PRODUCTNOTFOUND = "상품을 찾을 수 없습니다.";

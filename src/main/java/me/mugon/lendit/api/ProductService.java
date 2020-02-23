@@ -2,6 +2,7 @@ package me.mugon.lendit.api;
 
 import lombok.RequiredArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
+import me.mugon.lendit.domain.common.BaseValidator;
 import me.mugon.lendit.domain.product.Product;
 import me.mugon.lendit.domain.product.ProductRepository;
 import me.mugon.lendit.domain.product.ProductResource;
@@ -30,6 +31,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    private final BaseValidator baseValidator;
 
     /**
      * 상품 생성
@@ -69,11 +72,11 @@ public class ProductService {
     public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
         if (!optionalProduct.isPresent()) { //수정하려는 상품이 데이터베이스에 있는 상품인지
-            return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Product product = optionalProduct.get();
         if (!product.getAccount().getId().equals(currentUser.getId())) { //요청한 사용자가 상품을 등록한 사용자인지
-            return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         product.update(productRequestDto);
         ProductResponseDto responseDto = new ProductResponseDto(product);
@@ -98,11 +101,11 @@ public class ProductService {
     public ResponseEntity<?> deleteProduct(Long productId, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
         if (!optionalProduct.isPresent()) {
-            return new ResponseEntity<>(getErrorMap(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Product product = optionalProduct.get();
         if (!product.getAccount().getId().equals(currentUser.getId())) {
-            return new ResponseEntity<>(getErrorMap(INVALIDUSER), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         productRepository.delete(product);
         ProductResource productResource = new ProductResource(new ProductResponseDto(product));
@@ -127,13 +130,20 @@ public class ProductService {
         return ResponseEntity.ok(productResources);
     }
 
-    Optional<Product> findById(Long productId) {
-        return productRepository.findById(productId);
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getProduct(Long productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (!optionalProduct.isPresent()) {
+            return new ResponseEntity<>(baseValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
+        }
+        ProductResource productResource = new ProductResource(new ProductResponseDto(optionalProduct.get()));
+        productResource.add(linkTo(OrdersController.class).withRel("order"));
+        productResource.add(linkTo(ProductController.class).withRel("query-products"));
+        productResource.add(new Link("https://mkshin96.github.io/Coding-Task/#resources-get-product").withRel("profile"));
+        return new ResponseEntity<>(productResource, HttpStatus.OK);
     }
 
-    private Map<String, List<String>> getErrorMap(String message) {
-        Map<String, List<String>> errors = new HashMap<>();
-        errors.put(KEY, Arrays.asList(message));
-        return errors;
+    Optional<Product> findById(Long productId) {
+        return productRepository.findById(productId);
     }
 }

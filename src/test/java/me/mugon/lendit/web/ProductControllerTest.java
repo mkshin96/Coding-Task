@@ -22,12 +22,10 @@ import static me.mugon.lendit.api.error.ErrorMessageConstant.KEY;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -483,6 +481,54 @@ class ProductControllerTest extends BaseControllerTest {
                                 fieldWithPath("page.number").description("현재 페이지 번호(0부터 시작)")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("개별 상품 조회 테스트")
+    void 개별_상품_조회() throws Exception {
+        Account account = createAccount();
+        IntStream.rangeClosed(1, 10).forEach(index -> {
+            long price = 15000L;
+            long amount = 30L;
+            saveProduct_need_index(index, price, amount, account);
+        });
+
+        mockMvc.perform(get(productUrl + "/{productId}", 3))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").exists())
+                .andExpect(jsonPath("price", is(15000)))
+                .andExpect(jsonPath("amount", is(30)))
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.order").exists())
+                .andExpect(jsonPath("_links.query-products").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("get-product",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("order").description("link to order"),
+                                linkWithRel("query-products").description("link to query products"),
+                                linkWithRel("profile").description("link to profile")
+                        ), responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type header")
+                        ), responseFields(
+                                fieldWithPath("id").description("상품 식별자"),
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("amount").description("상품 재고 수량"),
+                                fieldWithPath("createdAt").description("상품 등록 일시"),
+                                fieldWithPath("account.id").description("상품 등록자 식별자"),
+                                fieldWithPath("account.username").description("상품 등록자 이름"),
+                                fieldWithPath("account.balance").description("상품 등록자 예치금"),
+                                fieldWithPath("account.role").description("상품 등록자 역할"),
+                                fieldWithPath("account.createdAt").description("상품 등록자 생성 일시"),
+                                fieldWithPath("_links.*.*").ignored()
+                        )
+                ));
+
+        List<Product> all = productRepository.findAll();
+        assertEquals(all.size(), 10);
     }
 
     private Product saveProduct(long price, long amount, Account account) {

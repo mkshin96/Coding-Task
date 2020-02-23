@@ -2355,7 +2355,7 @@ Content-Length: 7086
 <h4 id="resources-get-product_curl_request"><a class="link" href="#resources-get-product_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products' -i -X GET</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/products/3' -i -X GET</code></pre>
 </div>
 </div>
 </div>
@@ -2363,7 +2363,7 @@ Content-Length: 7086
 <h4 id="resources-get-product_http_request"><a class="link" href="#resources-get-product_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/products HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/products/3 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2380,280 +2380,34 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 7086
+Content-Length: 674
 
 {
-  "_embedded" : {
-    "productResponseDtoList" : [ {
-      "id" : 23,
-      "name" : "스타트 스프링 부트1",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.101",
-      "account" : {
-        "id" : 21,
-        "username" : "username",
-        "balance" : null,
-        "role" : "ROLE_USER",
-        "createdAt" : "2020-02-23T17:26:26.097"
-      },
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/23"
-        }
-      }
-    }, {
-      "id" : 24,
-      "name" : "스타트 스프링 부트2",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.103",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/24"
-        }
-      }
-    }, {
-      "id" : 25,
-      "name" : "스타트 스프링 부트3",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.105",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/25"
-        }
-      }
-    }, {
-      "id" : 26,
-      "name" : "스타트 스프링 부트4",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.107",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/26"
-        }
-      }
-    }, {
-      "id" : 27,
-      "name" : "스타트 스프링 부트5",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.111",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/27"
-        }
-      }
-    }, {
-      "id" : 28,
-      "name" : "스타트 스프링 부트6",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.113",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/28"
-        }
-      }
-    }, {
-      "id" : 29,
-      "name" : "스타트 스프링 부트7",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.115",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/29"
-        }
-      }
-    }, {
-      "id" : 30,
-      "name" : "스타트 스프링 부트8",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.117",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/30"
-        }
-      }
-    }, {
-      "id" : 31,
-      "name" : "스타트 스프링 부트9",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.12",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/31"
-        }
-      }
-    }, {
-      "id" : 32,
-      "name" : "스타트 스프링 부트10",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.122",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/32"
-        }
-      }
-    }, {
-      "id" : 33,
-      "name" : "스타트 스프링 부트11",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.124",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/33"
-        }
-      }
-    }, {
-      "id" : 34,
-      "name" : "스타트 스프링 부트12",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.126",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/34"
-        }
-      }
-    }, {
-      "id" : 35,
-      "name" : "스타트 스프링 부트13",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.128",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/35"
-        }
-      }
-    }, {
-      "id" : 36,
-      "name" : "스타트 스프링 부트14",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.13",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/36"
-        }
-      }
-    }, {
-      "id" : 37,
-      "name" : "스타트 스프링 부트15",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.132",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/37"
-        }
-      }
-    }, {
-      "id" : 38,
-      "name" : "스타트 스프링 부트16",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.134",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/38"
-        }
-      }
-    }, {
-      "id" : 39,
-      "name" : "스타트 스프링 부트17",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.135",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/39"
-        }
-      }
-    }, {
-      "id" : 40,
-      "name" : "스타트 스프링 부트18",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.137",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/40"
-        }
-      }
-    }, {
-      "id" : 41,
-      "name" : "스타트 스프링 부트19",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.139",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/41"
-        }
-      }
-    }, {
-      "id" : 42,
-      "name" : "스타트 스프링 부트20",
-      "price" : 15000,
-      "amount" : 30,
-      "createdAt" : "2020-02-23T17:26:26.141",
-      "account" : 21,
-      "_links" : {
-        "self" : {
-          "href" : "http://localhost:8080/api/products/42"
-        }
-      }
-    } ]
+  "id" : 3,
+  "name" : "스타트 스프링 부트1",
+  "price" : 15000,
+  "amount" : 30,
+  "createdAt" : "2020-02-23T17:26:25.262",
+  "account" : {
+    "id" : 9,
+    "username" : "username",
+    "balance" : null,
+    "role" : "ROLE_USER",
+    "createdAt" : "2020-02-23T17:26:25.256"
   },
   "_links" : {
-    "first" : {
-      "href" : "http://localhost:8080/api/products?page=0&amp;size=20"
-    },
     "self" : {
-      "href" : "http://localhost:8080/api/products?page=0&amp;size=20"
+      "href" : "http://localhost:8080/api/products/3"
     },
-    "next" : {
-      "href" : "http://localhost:8080/api/products?page=1&amp;size=20"
+    "order" : {
+      "href" : "http://localhost:8080/api/orders"
     },
-    "last" : {
-      "href" : "http://localhost:8080/api/products?page=1&amp;size=20"
+    "query-products" : {
+      "href" : "http://localhost:8080/api/products"
     },
     "profile" : {
-      "href" : "https://mkshin96.github.io/Coding-Task/#resources-products-list"
+      "href" : "https://mkshin96.github.io/Coding-Task/#resources-get-product"
     }
-  },
-  "page" : {
-    "size" : 20,
-    "totalElements" : 30,
-    "totalPages" : 2,
-    "number" : 0
   }
 }</code></pre>
 </div>
@@ -2697,84 +2451,54 @@ Content-Length: 7086
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 식별자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>price</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 가격</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].amount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>amount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 재고 수량</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록 일시</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Varies</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 식별자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>account.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 식별자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>account.username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account.balance</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>account.balance</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 예치금</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account.role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>account.role</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 역할</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*].account.createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>account.createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록자 생성 일시</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_embedded.productResponseDtoList[*]._links.self.href</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">link to self</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page.size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">한 페이지의 항목 개수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page.totalElements</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 항목 개수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page.totalPages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 개수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page.number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호(0부터 시작)</p></td>
 </tr>
 </tbody>
 </table>
@@ -2794,20 +2518,16 @@ Content-Length: 7086
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>first</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">link to first page</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>self</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">link to self</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>next</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">link to next page</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to order</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">link to last page</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>query-products</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">link to query products</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profile</code></p></td>
@@ -4178,7 +3898,7 @@ Content-Length: 5956
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-23 17:19:05 +0900
+Last updated 2020-02-23 17:31:02 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

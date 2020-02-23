@@ -159,7 +159,7 @@ operation::query-products[snippets='curl-request,http-request,http-response,resp
 
 `GET` 요청을 사용하여 서비스의 개별 상품을 조회할 수 있다.
 
-operation::query-products[snippets='curl-request,http-request,http-response,response-headers,response-fields,links']
+operation::get-product[snippets='curl-request,http-request,http-response,response-headers,response-fields,links']
 
 [[resources-products-create]]
 === 상품 등록

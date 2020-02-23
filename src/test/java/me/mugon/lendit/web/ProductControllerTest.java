@@ -493,7 +493,8 @@ class ProductControllerTest extends BaseControllerTest {
             saveProduct_need_index(index, price, amount, account);
         });
 
-        mockMvc.perform(get(productUrl + "/{productId}", 3))
+        List<Product> allProducts = productRepository.findAll();
+        mockMvc.perform(get(productUrl + "/{productId}", allProducts.get(0).getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").exists())

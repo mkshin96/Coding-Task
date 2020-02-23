@@ -6,6 +6,7 @@ import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.account.CurrentUser;
 import me.mugon.lendit.domain.order.OrdersValidator;
 import me.mugon.lendit.web.dto.order.OrdersRequestDto;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -18,7 +19,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/orders")
+@RequestMapping(value = "/api/orders", produces = MediaTypes.HAL_JSON_VALUE)
 @RestController
 public class OrdersController {
 

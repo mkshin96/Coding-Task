@@ -1,9 +1,11 @@
 package me.mugon.lendit.domain.product;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import me.mugon.lendit.domain.account.Account;
 import me.mugon.lendit.domain.order.Orders;
 import me.mugon.lendit.web.dto.product.ProductRequestDto;
@@ -40,10 +42,6 @@ public class Product implements Serializable {
     /** 상품 등록 일시 */
     private LocalDateTime createdAt;
 
-    /** 상품이 주문 가능한 상태인지(false = 주문 가능), 상품 재고 수량이 0이면 true*/
-    @JsonIgnore
-    private boolean checkAmount;
-
     /** 상품의 주문리스트 */
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Orders> ordersList;
@@ -72,9 +70,5 @@ public class Product implements Serializable {
 
     public boolean amountEqualsZero() {
         return this.amount == 0;
-    }
-
-    public void changeCheckAmount() {
-        this.checkAmount = true;
     }
 }

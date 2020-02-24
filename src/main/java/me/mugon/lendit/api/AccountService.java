@@ -46,7 +46,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public ResponseEntity<?> saveAccount(AccountRequestDto requestDto) {
         Optional<Account> findByUsername = accountRepository.findByUsername(requestDto.getUsername());
-        if (findByUsername.isPresent()) {
+        if (findByUsername.isPresent()) { //사용하려는 아이디가 사용하고 있는 아이디가 아닌지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(DUPLICATEDUSER), HttpStatus.BAD_REQUEST);
         }
         Account savedAccount = accountRepository.save(requestDto.toEntity());
@@ -70,7 +70,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public ResponseEntity<?> updateAccount(Long accountId, AccountRequestDto requestDto) {
         Optional<Account> optionalAccount = findById(accountId);
-        if (!optionalAccount.isPresent()) {
+        if (!optionalAccount.isPresent()) { // 수정하려는 유저가 저장되어있는 유저인지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Account account = optionalAccount.get();
@@ -95,7 +95,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public ResponseEntity<?> deleteAccount(Long accountId) {
         Optional<Account> optionalAccount = findById(accountId);
-        if (!optionalAccount.isPresent()) {
+        if (!optionalAccount.isPresent()) { //삭제하려는 유저가 저장되어있는 유저인지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(USERNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         accountRepository.delete(optionalAccount.get());

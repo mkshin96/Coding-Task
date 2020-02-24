@@ -71,11 +71,11 @@ public class ProductService {
     @Transactional
     public ResponseEntity<?> updateProduct(Long productId, ProductRequestDto productRequestDto, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
-        if (!optionalProduct.isPresent()) { //수정하려는 상품이 데이터베이스에 있는 상품인지
+        if (!optionalProduct.isPresent()) { //수정하려는 상품이 데이터베이스에 있는 상품인지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Product product = optionalProduct.get();
-        if (!product.getAccount().getId().equals(currentUser.getId())) { //요청한 사용자가 상품을 등록한 사용자인지
+        if (!product.getAccount().getId().equals(currentUser.getId())) { //요청한 사용자가 상품을 등록한 사용자인지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         product.update(productRequestDto);
@@ -100,11 +100,11 @@ public class ProductService {
     @Transactional
     public ResponseEntity<?> deleteProduct(Long productId, Account currentUser) {
         Optional<Product> optionalProduct = findById(productId);
-        if (!optionalProduct.isPresent()) {
+        if (!optionalProduct.isPresent()) { //상품이 저장되어있는지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(PRODUCTNOTFOUND), HttpStatus.BAD_REQUEST);
         }
         Product product = optionalProduct.get();
-        if (!product.getAccount().getId().equals(currentUser.getId())) {
+        if (!product.getAccount().getId().equals(currentUser.getId())) { //상품을 등록한 유저가 맞는지 확인
             return new ResponseEntity<>(baseValidator.returnErrorMessage(INVALIDUSER), HttpStatus.BAD_REQUEST);
         }
         productRepository.delete(product);

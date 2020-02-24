@@ -40,7 +40,7 @@ public class Product implements Serializable {
     /** 상품 등록 일시 */
     private LocalDateTime createdAt;
 
-    /** 상품이 주문 가능한 상태인지(false = 주문 가능) */
+    /** 상품이 주문 가능한 상태인지(false = 주문 가능), 상품 재고 수량이 0이면 true*/
     @JsonIgnore
     private boolean checkAmount;
 

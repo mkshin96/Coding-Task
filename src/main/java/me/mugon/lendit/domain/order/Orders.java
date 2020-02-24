@@ -26,10 +26,10 @@ public class Orders {
     /** 총 금액 */
     private Long total;
 
-    /** 상품 개수 */
+    /** 주문할 상품 개수 */
     private Long number;
 
-    /** 주문 등록 일시 */
+    /** 주문 시간 */
     private LocalDateTime createdAt;
 
     /**
